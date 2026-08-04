@@ -1,0 +1,54 @@
+{
+    "locations": {
+        "US": [
+            {"city": "Beverly Hills", "state": "CA", "zip": "90210", "currency": "USD"},
+            {"city": "New York", "state": "NY", "zip": "10001", "currency": "USD"},
+            {"city": "Miami", "state": "FL", "zip": "33101", "currency": "USD"},
+            {"city": "Chicago", "state": "IL", "zip": "60601", "currency": "USD"},
+            {"city": "Houston", "state": "TX", "zip": "77001", "currency": "USD"},
+            {"city": "Seattle", "state": "WA", "zip": "98101", "currency": "USD"},
+            {"city": "Los Angeles", "state": "CA", "zip": "90001", "currency": "USD"},
+            {"city": "Phoenix", "state": "AZ", "zip": "85001", "currency": "USD"},
+            {"city": "Philadelphia", "state": "PA", "zip": "19101", "currency": "USD"}
+        ],
+        "MX": [
+            {"city": "Ciudad de México", "state": "CDMX", "zip": "06000", "currency": "MXN"},
+            {"city": "Guadalajara", "state": "JAL", "zip": "44100", "currency": "MXN"},
+            {"city": "Monterrey", "state": "NL", "zip": "64000", "currency": "MXN"},
+            {"city": "Puebla", "state": "PUE", "zip": "72000", "currency": "MXN"},
+            {"city": "León", "state": "GTO", "zip": "37000", "currency": "MXN"},
+            {"city": "Tijuana", "state": "BC", "zip": "22000", "currency": "MXN"}
+        ],
+        "ES": [
+            {"city": "Madrid", "state": "MD", "zip": "28001", "currency": "EUR"},
+            {"city": "Barcelona", "state": "CT", "zip": "08001", "currency": "EUR"},
+            {"city": "Valencia", "state": "VC", "zip": "46001", "currency": "EUR"},
+            {"city": "Sevilla", "state": "AN", "zip": "41001", "currency": "EUR"},
+            {"city": "Bilbao", "state": "PV", "zip": "48001", "currency": "EUR"}
+        ],
+        "CA": [
+            {"city": "Toronto", "state": "ON", "zip": "M5V 2T6", "currency": "CAD"},
+            {"city": "Vancouver", "state": "BC", "zip": "V6B 1A1", "currency": "CAD"},
+            {"city": "Montreal", "state": "QC", "zip": "H2X 1Y4", "currency": "CAD"},
+            {"city": "Ottawa", "state": "ON", "zip": "K1P 1J1", "currency": "CAD"}
+        ],
+        "GB": [
+            {"city": "London", "state": "ENG", "zip": "EC1A 1BB", "currency": "GBP"},
+            {"city": "Manchester", "state": "ENG", "zip": "M1 1AG", "currency": "GBP"},
+            {"city": "Birmingham", "state": "ENG", "zip": "B1 1AA", "currency": "GBP"}
+        ],
+        "DE": [
+            {"city": "Berlin", "state": "BE", "zip": "10115", "currency": "EUR"},
+            {"city": "Munich", "state": "BY", "zip": "80331", "currency": "EUR"},
+            {"city": "Frankfurt", "state": "HE", "zip": "60311", "currency": "EUR"}
+        ]
+    },
+    "countries": [
+        "USA",
+        "Mexico",
+        "Canada",
+        "Germany",
+        "Spain",
+        "United Kingdom"
+    ]
+}

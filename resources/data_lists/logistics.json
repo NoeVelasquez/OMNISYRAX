@@ -1,0 +1,16 @@
+{
+    "ship_methods": [
+        "UPSND2DAY",
+        "UPSND8AM",
+        "UPSSTD",
+        "FEDX2DAY",
+        "DHLINT",
+        "DHLSTD",
+        "FEDXINT"
+    ],
+    "ship_carriers": [
+        "UPS",
+        "FedEx",
+        "DHL"
+    ]
+}

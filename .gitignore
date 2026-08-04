@@ -1,0 +1,39 @@
+# Python Bytecode & Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Sensitive Credentials (DO NOT COMMIT REAL TOKENS)
+config/credentials.yaml
+config/tenants_import.txt
+
+# Developer Tools (STRICTLY PRIVATE - DO NOT COMMIT TO GITHUB)
+dev_mode.sh
+DEVELOPER_GUIDE.md
+
+# Generated Output Data
+data/*.csv
+data/*.xml
+data/*.pdf
+data/edi_xmls/*
+data/ch_neworders/*
+data/po_csvs/*
+data/pdfs/*
+data/.product_history.json
+!data/.gitkeep
+
+# Archives & Backups
+OMNISYRAX.zip
+backups/
+scratch/
+evidence/
+
+# Logs & System Files
+*.log
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,8 @@
+# OMNISYRAX: Ejemplo de importación de tenants
+# Formato: Nombre del Tenant seguido del Token Bearer JWT (puede ser multilínea)
+
+MiEmpresa QA
+eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.EXAMPLE_BEARER_TOKEN_HERE...
+
+OtraCuenta Demo
+eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.EXAMPLE_BEARER_TOKEN_HERE...
