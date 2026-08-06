@@ -1,3 +1,5 @@
+import csv
+from pathlib import Path
 import typer
 import logging
 import questionary
@@ -10,6 +12,38 @@ from rich.logging import RichHandler
 # Suprimir advertencias molestas
 warnings.filterwarnings("ignore", category=UserWarning, module="urllib3")
 warnings.filterwarnings("ignore", message=".*OpenSSL.*")
+
+def extract_skus_from_csv(file_path: str) -> List[str]:
+    """Extrae una lista de SKUs únicos desde cualquier archivo CSV."""
+    path = Path(file_path.strip())
+    if not path.exists():
+        console.print(f"[bold red]❌ Error: El archivo '{file_path}' no existe.[/bold red]")
+        return []
+    
+    skus = set()
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames or []
+            sku_col = None
+            for col in fieldnames:
+                if "sku" in col.lower():
+                    sku_col = col
+                    break
+            
+            if not sku_col:
+                console.print(f"[bold yellow]⚠️ No se detectó ninguna columna de SKU en '{file_path}'. Columnas leídas: {fieldnames}[/bold yellow]")
+                return []
+            
+            for row in reader:
+                val = row.get(sku_col)
+                if val and val.strip():
+                    skus.add(val.strip())
+    except Exception as e:
+        console.print(f"[bold red]❌ Error al leer el archivo CSV: {e}[/bold red]")
+        return []
+
+    return sorted(list(skus))
 
 from src.core.config_manager import config
 from src.generators.order_generator import OrderGenerator
@@ -612,6 +646,35 @@ def prompt_category() -> str:
     }
     return cat_map.get(cat_choice, "all")
 
+def prompt_brand(category: str = "all") -> str:
+    brand_choice = questionary.select(
+        "¿Deseas especificar una marca para los productos?",
+        choices=[
+            "🎲 Aleatorio / Todas las marcas",
+            "📋 Seleccionar de una lista de marcas destacadas",
+            "✍️ Ingresar marca manualmente por teclado"
+        ]
+    ).ask()
+    
+    if not brand_choice or "Aleatorio" in brand_choice:
+        return "all"
+        
+    if "lista destacada" in brand_choice:
+        from src.utils.data_pool import CATEGORY_BRAND_SUGGESTIONS
+        default_list = ["JBL", "Sony", "Apple", "Samsung", "Bose", "Nike", "Adidas", "Logitech", "Philips", "Puma"]
+        suggestions = CATEGORY_BRAND_SUGGESTIONS.get(category, default_list)
+        chosen = questionary.select(
+            "Selecciona la marca:",
+            choices=suggestions
+        ).ask()
+        return chosen.strip() if chosen else "all"
+        
+    elif "manualmente" in brand_choice:
+        user_brand = questionary.text("Ingresa el nombre de la marca (ej. JBL, Bose, Samsung, Nike):").ask()
+        return user_brand.strip() if user_brand else "all"
+        
+    return "all"
+
 def prompt_language() -> str:
     lang_choice = questionary.select(
         "¿Idioma de los productos?",
@@ -643,6 +706,31 @@ def run_local_generator(action: str):
             ]
         ).ask()
         
+        sku_source = questionary.select(
+            "¿Origen de los SKUs para las órdenes?",
+            choices=[
+                "🎲 Generar SKUs nuevos al azar",
+                "📄 Extraer SKUs desde un archivo CSV existente",
+                "✍️ Ingresar SKUs manualmente (separados por coma)"
+            ]
+        ).ask()
+        
+        extracted_skus = None
+        if sku_source == "📄 Extraer SKUs desde un archivo CSV existente":
+            csv_path = questionary.text("Ruta del archivo CSV (ej. data/orders_20260806_1452.csv):").ask()
+            if csv_path:
+                extracted_skus = extract_skus_from_csv(csv_path)
+                if extracted_skus:
+                    console.print(f"[bold green]✅ Se extrajeron {len(extracted_skus)} SKUs únicos del archivo.[/bold green]")
+                else:
+                    return
+            else:
+                return
+        elif sku_source == "✍️ Ingresar SKUs manualmente (separados por coma)":
+            raw_skus = questionary.text("Ingresa los SKUs separados por coma:").ask()
+            if raw_skus:
+                extracted_skus = [s.strip() for s in raw_skus.split(",") if s.strip()]
+
         date_range = questionary.select(
             "¿Rango de fechas?",
             choices=[
@@ -662,19 +750,25 @@ def run_local_generator(action: str):
         days = days_map.get(date_range, 0)
         
         multi = True if "Multi-SKU" in sku_mode else False
-        orders(count=int(qty), format="csv", multi_sku=multi, days_back=days)
+        orders(count=int(qty), format="csv", multi_sku=multi, days_back=days, skus=extracted_skus)
     elif action == "📦 Productos Estándar (CSV)":
         qty = questionary.text("Cantidad?", "50").ask()
         if not qty: return
         selected_cat = prompt_category()
+        selected_brand = prompt_brand(selected_cat)
         selected_lang = prompt_language()
-        products(count=int(qty), lang=selected_lang, category=selected_cat)
+        search_target = selected_brand if selected_brand != "all" else selected_cat
+        console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
+        products(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand)
     elif action == "🏪 Productos Shopify (CSV)":
         qty = questionary.text("Cantidad?", "20").ask()
         if not qty: return
         selected_cat = prompt_category()
+        selected_brand = prompt_brand(selected_cat)
         selected_lang = prompt_language()
-        shopify(count=int(qty), lang=selected_lang, category=selected_cat)
+        search_target = selected_brand if selected_brand != "all" else selected_cat
+        console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
+        shopify(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand)
     elif action == "📈 Inventario / Stock (CSV)":
         qty = questionary.text("Cantidad?", "100").ask()
         if not qty: return
@@ -695,7 +789,10 @@ def run_local_generator(action: str):
         qty = questionary.text("Cantidad?", "50").ask()
         if not qty: return
         selected_cat = prompt_category()
+        selected_brand = prompt_brand(selected_cat)
         selected_lang = prompt_language()
+        search_target = selected_brand if selected_brand != "all" else selected_cat
+        console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
         shipedge(count=int(qty), lang=selected_lang, category=selected_cat)
     elif action == "📠 Generar EDI (Standard XML)":
         qty = questionary.text("¿Cuántos archivos EDI XML?", "5").ask()
@@ -1834,11 +1931,11 @@ def generate_batch_interactive():
     console.print("\n[bold green]✅ Generación Batch completada.[/bold green]")
 
 @app.command()
-def shopify(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all"):
+def shopify(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all"):
     """Genera productos en formato Shopify."""
     filename = output or get_timestamp_filename("shopify_products")
-    console.print(f"[bold magenta]🛍️ OMNISYRAX: Generando {count} productos Shopify ({lang}, categoría: {category})...[/bold magenta]")
-    data = ShopifyGenerator(lang=lang, category=category).generate_batch(count)
+    console.print(f"[bold magenta]🛍️ OMNISYRAX: Generando {count} productos Shopify ({lang}, categoría: {category}, marca: {brand})...[/bold magenta]")
+    data = ShopifyGenerator(lang=lang, category=category, brand=brand).generate_batch(count)
     CSVExporter.export(data, filename, config.output_dir)
     console.print(f"[bold green]✅ Shopify CSV listo en data/{filename}[/bold green]")
 
@@ -1878,12 +1975,12 @@ def generate_all(count: int = 20):
 
 # Comandos anteriores (reutilizados)
 @app.command()
-def products(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all"):
+def products(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all"):
     """Genera productos estándar en formato CSV."""
     filename = output or get_timestamp_filename("products")
-    data = ProductGenerator(lang=lang, category=category).generate_batch(count)
+    data = ProductGenerator(lang=lang, category=category, brand=brand).generate_batch(count)
     CSVExporter.export(data, filename, config.output_dir)
-    console.print(f"[bold green]✅ {count} Productos generados ({lang}, categoría: {category}) en data/{filename}[/bold green]")
+    console.print(f"[bold green]✅ {count} Productos generados ({lang}, categoría: {category}, marca: {brand}) en data/{filename}[/bold green]")
 
 @app.command()
 def po(count: int = 10, output: Optional[str] = None, skus: Optional[List[str]] = None):
@@ -1902,10 +1999,10 @@ def transfers(count: int = 10, output: Optional[str] = None):
     console.print(f"[bold green]✅ {count} Transferencias generadas en data/{filename}[/bold green]")
 
 @app.command()
-def shipedge(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all"):
+def shipedge(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all"):
     """Genera productos con formato específico de importación Shipedge."""
     filename = output or get_timestamp_filename("shipedge_products")
-    console.print(f"[bold cyan]🚢 OMNISYRAX: Generando {count} productos Shipedge ({lang}, categoría: {category})...[/bold cyan]")
+    console.print(f"[bold cyan]🚢 OMNISYRAX: Generando {count} productos Shipedge ({lang}, categoría: {category}, marca: {brand})...[/bold cyan]")
     data = ShipEdgeGenerator(lang=lang, category=category).generate_batch(count)
     CSVExporter.export(data, filename, config.output_dir)
     console.print(f"[bold green]✅ Shipedge CSV listo en data/{filename}[/bold green]")
@@ -1953,6 +2050,7 @@ def orders(
     multi_sku: bool = True,
     output: Optional[str] = None,
     skus: Optional[List[str]] = None,
+    skus_file: Optional[str] = typer.Option(None, "--skus-file", help="Ruta a un archivo CSV para extraer SKUs"),
     days_back: int = 0,
     _pregenerated_data: Optional[List[str]] = typer.Option(None, hidden=True)
 ):
@@ -1960,8 +2058,16 @@ def orders(
     # Corregir parámetros de Typer si se llama como función normal
     if type(profiles).__name__ == "OptionInfo" or "OptionInfo" in str(type(profiles)):
         profiles = None
+    if type(skus_file).__name__ == "OptionInfo" or "OptionInfo" in str(type(skus_file)):
+        skus_file = None
     if type(_pregenerated_data).__name__ == "OptionInfo" or "OptionInfo" in str(type(_pregenerated_data)):
         _pregenerated_data = None
+
+    if skus_file and not skus:
+        extracted = extract_skus_from_csv(skus_file)
+        if extracted:
+            skus = extracted
+            console.print(f"[bold green]✅ Se cargaron {len(skus)} SKUs únicos desde '{skus_file}'[/bold green]")
 
     if _pregenerated_data:
         data = _pregenerated_data

@@ -31,10 +31,11 @@ class InventoryGenerator(BaseGenerator):
         adj = random.choice(lang_data["adjectives"])
         name = f"{adj} {noun} - {brand}"
         
+        clean_seed = "".join(c for c in sku if c.isalnum())
         return InventoryItem(
             sku=sku,
             quantity=random.randint(10, 500),
-            images=f"https://picsum.photos/seed/{sku}/600/600",
+            images=f"https://picsum.photos/seed/{clean_seed}/600/600",
             name=name,
             description=random.choice(lang_data["descriptions"]),
             barcode="".join(str(random.randint(0, 9)) for _ in range(12)),

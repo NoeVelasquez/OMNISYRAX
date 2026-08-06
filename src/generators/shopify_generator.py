@@ -9,13 +9,14 @@ from src.utils.api_product_fetcher import APIProductFetcher
 class ShopifyGenerator(BaseGenerator):
     """Generador especializado en el formato de importación de Shopify."""
     
-    def __init__(self, seed: int = None, lang: str = "es", category: str = "all"):
+    def __init__(self, seed: int = None, lang: str = "es", category: str = "all", brand: str = "all"):
         super().__init__(seed=seed, lang=lang)
         self.selected_category = category
+        self.selected_brand = brand
         
     def generate_single(self) -> ShopifyProduct:
         # Intentar obtener producto real en vivo desde API
-        live_data = APIProductFetcher.get_live_product(category=self.selected_category)
+        live_data = APIProductFetcher.get_live_product(category=self.selected_category, brand=self.selected_brand)
         
         if live_data:
             full_title = live_data["name"]
@@ -23,7 +24,7 @@ class ShopifyGenerator(BaseGenerator):
             category = live_data.get("category", "Electronics")
             body_html = f"<p>{live_data.get('description', full_title)}</p>"
             variant_price = live_data.get("price", round(random.uniform(19.99, 499.99), 2))
-            image_src = live_data.get("image") or "https://picsum.photos/seed/shp/800/800.jpg"
+            image_src = APIProductFetcher._clean_image_url(live_data.get("image")) or "https://picsum.photos/seed/shp/800/800.jpg"
             grams = int(live_data.get("weight", random.uniform(0.1, 5.0)) * 1000)
         else:
             if self.lang == "all":

@@ -387,3 +387,205 @@ HS_CODES = {
     "Beauty": ["3304.99.00", "3304.10.00", "3307.30.00"],
     "Automotive": ["9026.20.00", "3926.30.00", "6307.10.00", "8544.30.00"]
 }
+
+REAL_JBL_PRODUCTS = [
+    {
+        "name": "JBL Flip 6 Portable Waterproof Speaker",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Bold sound for every adventure. The JBL Flip 6 delivers powerful JBL Original Pro Sound with exceptional clarity thanks to its 2-way speaker system.",
+        "price": 129.95,
+        "price_buy": 65.00,
+        "price_wholesale": 85.00,
+        "weight": 0.55,
+        "length": 17.8,
+        "width": 6.8,
+        "height": 7.2,
+        "hs_code": "8518.22.00",
+        "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Charge 5 Portable Wi-Fi & Bluetooth Speaker",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Take the party with you no matter what the weather. The JBL Charge 5 speaker delivers bold JBL Original Pro Sound with an optimized long excursion driver.",
+        "price": 179.95,
+        "price_buy": 90.00,
+        "price_wholesale": 120.00,
+        "weight": 0.96,
+        "length": 22.3,
+        "width": 9.7,
+        "height": 9.4,
+        "hs_code": "8518.22.00",
+        "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Boombox 3 Wi-Fi Portable Speaker with Dolby Atmos",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Massive sound and deepest bass. The JBL Boombox 3 Wi-Fi speaker brings massive JBL Original Pro Sound with the deepest bass from a portable speaker.",
+        "price": 499.95,
+        "price_buy": 250.00,
+        "price_wholesale": 340.00,
+        "weight": 6.7,
+        "length": 48.2,
+        "width": 25.7,
+        "height": 20.0,
+        "hs_code": "8518.22.00",
+        "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Tune 510BT Wireless On-Ear Headphones",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Stream powerful JBL Pure Bass sound with no strings attached. Easy to use, these headphones provide up to 40 hours of pure pleasure and an extra 2 hours of battery with just 5 minutes of power.",
+        "price": 49.95,
+        "price_buy": 24.00,
+        "price_wholesale": 35.00,
+        "weight": 0.16,
+        "length": 18.5,
+        "width": 15.0,
+        "height": 7.5,
+        "hs_code": "8518.30.20",
+        "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Go 3 Ultra-Portable Waterproof Speaker",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Grab and go. JBL Go 3 features bold styling and rich JBL Pro Sound. With its new eye-catching edgy design, colorful fabrics and expressive details this a must-have accessory for your next outing.",
+        "price": 39.95,
+        "price_buy": 18.00,
+        "price_wholesale": 27.00,
+        "weight": 0.21,
+        "length": 8.7,
+        "width": 7.5,
+        "height": 4.1,
+        "hs_code": "8518.22.00",
+        "image": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL PartyBox 110 Portable Party Speaker with Built-in Lights",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Bring a whole new dimension to any party with the unique dynamic LED lightrings, synced to the powerful sound and deep bass of the PartyBox 110.",
+        "price": 399.95,
+        "price_buy": 195.00,
+        "price_wholesale": 270.00,
+        "weight": 10.8,
+        "length": 29.5,
+        "width": 56.8,
+        "height": 30.0,
+        "hs_code": "8518.22.00",
+        "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Live 660NC Wireless Over-Ear NC Headphones",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "In your world, music is essential, so slip on a pair of JBL Live 660NC and elevate your day. Delivering signature sound punctuated with enhanced bass.",
+        "price": 199.95,
+        "price_buy": 95.00,
+        "price_wholesale": 135.00,
+        "weight": 0.25,
+        "length": 20.0,
+        "width": 16.0,
+        "height": 8.0,
+        "hs_code": "8518.30.20",
+        "image": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Quantum 800 Wireless Gaming Headset with ANC",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Level up your audio experience with JBL QuantumSOUND Signature and active noise cancelling engineered for immersive spatial positioning.",
+        "price": 229.95,
+        "price_buy": 110.00,
+        "price_wholesale": 150.00,
+        "weight": 0.41,
+        "length": 21.0,
+        "width": 19.0,
+        "height": 9.5,
+        "hs_code": "8518.30.20",
+        "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Endurance Peak 3 Waterproof True Wireless Earbuds",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "Power your workout with JBL Pure Bass sound and 50 hours of total playback time with IP68 dustproof and waterproof design.",
+        "price": 99.95,
+        "price_buy": 48.00,
+        "price_wholesale": 68.00,
+        "weight": 0.08,
+        "length": 10.0,
+        "width": 6.0,
+        "height": 4.0,
+        "hs_code": "8518.30.20",
+        "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop"
+    },
+    {
+        "name": "JBL Cinema SB170 2.1 Channel Soundbar with Subwoofer",
+        "brand": "JBL",
+        "category": "Electronics",
+        "description": "220W power output, Dolby Digital, optical and HDMI ARC, four powerful full-range drivers with a wireless subwoofer for extra deep bass.",
+        "price": 249.95,
+        "price_buy": 120.00,
+        "price_wholesale": 165.00,
+        "weight": 5.2,
+        "length": 90.0,
+        "width": 15.0,
+        "height": 20.0,
+        "hs_code": "8518.22.00",
+        "image": "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop"
+    }
+]
+
+CATEGORY_BRAND_SUGGESTIONS = {
+    "Electronics": ["JBL", "Sony", "Apple", "Samsung", "Bose", "Logitech", "Philips", "Pioneer"],
+    "Clothing": ["Nike", "Adidas", "Puma", "Under Armour", "Levi's", "Zara", "Tommy Hilfiger"],
+    "Food": ["Nestlé", "Coca-Cola", "Kellogg's", "Pepsi", "Kraft", "Danone"],
+    "Books": ["Penguin", "HarperCollins", "Random House", "Simon & Schuster", "O'Reilly"],
+    "Home & Garden": ["IKEA", "Ninja", "Dyson", "KitchenPro", "DeLonghi", "Philips"],
+    "Sports": ["Nike", "Adidas", "Under Armour", "Puma", "Reebok", "Wilson"],
+    "Toys": ["LEGO", "Hasbro", "Mattel", "Bandai", "Funko", "ToyCraft"],
+    "Health": ["Optimum Nutrition", "GNC", "Centrum", "Nature Made", "Muscletech"],
+    "Beauty": ["L'Oréal", "Maybelline", "MAC", "Clinique", "Nivea", "Estée Lauder"],
+    "Automotive": ["Bosch", "Michelin", "Mobil 1", "Castrol", "Pioneer Auto", "3M"],
+    "Jewelry & Accessories": ["Pandora", "Swarovski", "Ray-Ban", "Casio", "Fossil", "Oakley"],
+    "Tools & Hardware": ["DeWalt", "Makita", "Milwaukee", "Bosch Tools", "Stanley", "Black & Decker"]
+}
+
+REAL_CATEGORY_IMAGES = {
+    "Electronics": [
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop"
+    ],
+    "Toys": [
+        "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&auto=format&fit=crop"
+    ],
+    "Clothing": [
+        "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop"
+    ],
+    "Beauty": [
+        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&auto=format&fit=crop"
+    ],
+    "Books": [
+        "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"
+    ],
+    "Food": [
+        "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop"
+    ],
+    "Home & Garden": [
+        "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop"
+    ]
+}
+
+def get_real_category_image(category: str) -> str:
+    images = REAL_CATEGORY_IMAGES.get(category, REAL_CATEGORY_IMAGES["Electronics"])
+    return random.choice(images)

@@ -10,6 +10,18 @@ class CSVExporter:
     """Maneja la exportación de modelos Pydantic a archivos CSV."""
     
     @staticmethod
+    def _clean_description(desc: str, max_len: int = 250) -> str:
+        if not desc:
+            return ""
+        import re
+        clean = re.sub(r'<[^>]+>', ' ', str(desc))
+        clean = " ".join(clean.replace("\n", " ").replace("\r", " ").replace('"', '').split())
+        if len(clean) > max_len:
+            truncated = clean[:max_len - 3].rsplit(" ", 1)[0]
+            return f"{truncated}..."
+        return clean
+
+    @staticmethod
     def export(data: List[BaseModel], filename: str, output_dir: Path) -> Path:
         if not data:
             raise ValueError("No hay datos para exportar.")
@@ -109,9 +121,11 @@ class CSVExporter:
                         }
                         flat_data.append(row)
             elif hasattr(item, 'supplier'): # Productos
+                raw_desc = item.description if item.description else f"{item.name} de {item.brand}."
+                clean_desc = CSVExporter._clean_description(raw_desc, max_len=250)
                 row = {
                     "product": item.name.split(" - ")[0], # Nombre base
-                    "description": item.description,
+                    "description": clean_desc,
                     "images": item.images,
                     "type_product": item.type_product,
                     "category": item.category,

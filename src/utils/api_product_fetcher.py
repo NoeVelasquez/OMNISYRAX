@@ -33,6 +33,30 @@ class APIProductFetcher:
         except Exception:
             pass
 
+    @staticmethod
+    def _clean_image_url(url: str) -> str:
+        if not url:
+            return ""
+        url = str(url).strip()
+        # Eliminar caracteres de control o saltos de línea
+        url = "".join(c for c in url if ord(c) >= 32)
+        # Reemplazar espacios sin codificar con %20 para validez HTTP
+        if " " in url:
+            url = url.replace(" ", "%20")
+        return url
+
+    @staticmethod
+    def _clean_description(desc: str, max_len: int = 250) -> str:
+        if not desc:
+            return ""
+        import re
+        clean = re.sub(r'<[^>]+>', ' ', str(desc))
+        clean = " ".join(clean.replace("\n", " ").replace("\r", " ").replace('"', '').split())
+        if len(clean) > max_len:
+            truncated = clean[:max_len - 3].rsplit(" ", 1)[0]
+            return f"{truncated}..."
+        return clean
+
     @classmethod
     def load_live_products(cls, force_refresh: bool = False) -> list:
         cls._load_history()
@@ -63,13 +87,14 @@ class APIProductFetcher:
                         "Tools": "Tools & Hardware", "Hardware": "Tools & Hardware"
                     }
                     category = cat_map.get(cat_raw, "Electronics")
+                    raw_img = item.get("thumbnail") or (item.get("images", [""])[0] if item.get("images") else "")
                     products.append({
                         "name": item.get("title", "Product"),
                         "brand": item.get("brand") or "Generic",
                         "category": category,
                         "description": item.get("description", ""),
                         "price": float(item.get("price", 29.99)),
-                        "image": item.get("thumbnail") or (item.get("images", [""])[0] if item.get("images") else ""),
+                        "image": cls._clean_image_url(raw_img),
                         "weight": round(float(item.get("weight", random.uniform(0.2, 5.0))), 2)
                     })
         except Exception:
@@ -83,6 +108,14 @@ class APIProductFetcher:
             with urllib.request.urlopen(req, timeout=3) as resp:
                 data = json.loads(resp.read().decode())
                 for item in data:
+                    title = item.get("title", "Item")
+                    desc = item.get("description", "")
+                    raw_img = item.get("images", [""])[0] if item.get("images") else ""
+                    
+                    # Ignorar items basura de prueba (ej: Config-..., description-..., placehold.co)
+                    if "config-" in title.lower() or "description-" in desc.lower() or "placehold" in raw_img.lower():
+                        continue
+                        
                     cat_raw = item.get("category", {}).get("name", "").lower()
                     if "clothes" in cat_raw or "shoe" in cat_raw:
                         category = "Clothing"
@@ -92,13 +125,14 @@ class APIProductFetcher:
                         category = "Home & Garden"
                     else:
                         category = "Jewelry & Accessories"
+                        
                     products.append({
-                        "name": item.get("title", "Item"),
+                        "name": title,
                         "brand": "EscuelaBrand",
                         "category": category,
-                        "description": item.get("description", ""),
+                        "description": desc,
                         "price": float(item.get("price", 49.99)),
-                        "image": item.get("images", [""])[0] if item.get("images") else "",
+                        "image": cls._clean_image_url(raw_img),
                         "weight": round(random.uniform(0.4, 6.0), 2)
                     })
         except Exception:
@@ -126,7 +160,7 @@ class APIProductFetcher:
                         "category": category,
                         "description": item.get("description", ""),
                         "price": float(item.get("price", 19.99)),
-                        "image": item.get("image", ""),
+                        "image": cls._clean_image_url(item.get("image", "")),
                         "weight": round(random.uniform(0.3, 4.0), 2)
                     })
         except Exception:
@@ -139,15 +173,16 @@ class APIProductFetcher:
             with urllib.request.urlopen(req, timeout=3) as resp:
                 data = json.loads(resp.read().decode())
                 for item in data[:35]:
-                    name = item.get("name") or "Beauty Item"
+                    raw_name = item.get("name") or "Beauty Item"
                     brand = (item.get("brand") or "Cosmetics").capitalize()
+                    full_name = raw_name if raw_name.lower().startswith(brand.lower()) else f"{brand} {raw_name}"
                     products.append({
-                        "name": f"{brand} {name}",
+                        "name": full_name,
                         "brand": brand,
                         "category": "Beauty",
-                        "description": item.get("description") or f"{name} by {brand}",
+                        "description": item.get("description") or f"{raw_name} by {brand}",
                         "price": float(item.get("price") or 15.0),
-                        "image": item.get("image_link") or "",
+                        "image": cls._clean_image_url(item.get("image_link") or ""),
                         "weight": round(random.uniform(0.1, 0.8), 2)
                     })
         except Exception:
@@ -169,7 +204,7 @@ class APIProductFetcher:
                         "category": "Books",
                         "description": f"Edición clásica de {title} por {author}.",
                         "price": round(random.uniform(9.99, 39.99), 2),
-                        "image": f"https://picsum.photos/seed/book{b.get('id')}/600/900.jpg",
+                        "image": cls._clean_image_url("https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"),
                         "weight": round(random.uniform(0.3, 1.2), 2)
                     })
         except Exception:
@@ -182,15 +217,21 @@ class APIProductFetcher:
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req, timeout=3) as resp:
                 data = json.loads(resp.read().decode()).get("results", [])
-                for t in data:
+                toy_images = [
+                    "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=800&auto=format&fit=crop"
+                ]
+                for idx, t in enumerate(data):
                     raw_name = t.get("name", "Toy").replace("-", " ").title()
+                    toy_img = toy_images[idx % len(toy_images)]
                     products.append({
                         "name": f"Figura Coleccionable {raw_name}",
                         "brand": "ToyCraft",
                         "category": "Toys",
                         "description": f"Figura de edición limitada {raw_name}.",
                         "price": round(random.uniform(12.99, 59.99), 2),
-                        "image": f"https://picsum.photos/seed/toy{raw_name}/600/600.jpg",
+                        "image": cls._clean_image_url(toy_img),
                         "weight": round(random.uniform(0.2, 2.0), 2)
                     })
         except Exception:
@@ -202,19 +243,42 @@ class APIProductFetcher:
         return cls._cache
 
     @classmethod
-    def get_live_product(cls, category: str = "all") -> dict:
+    def get_live_product(cls, category: str = "all", brand: str = "all") -> dict:
         cls._load_history()
-        prods = cls.load_live_products()
-        if not prods:
-            return None
-            
-        if category != "all":
-            filtered = [p for p in prods if p["category"].lower() == category.lower()]
-            pool = filtered if filtered else prods
+        
+        # Manejo especial para catálogo auténtico de JBL
+        if brand and "jbl" in str(brand).lower():
+            from src.utils.data_pool import REAL_JBL_PRODUCTS
+            pool = REAL_JBL_PRODUCTS
         else:
-            pool = prods
-            
+            prods = cls.load_live_products()
+            if not prods:
+                return None
+                
+            if category != "all":
+                filtered = [p for p in prods if p["category"].lower() == category.lower()]
+                pool = filtered if filtered else prods
+            else:
+                pool = prods
+                
+            if brand and brand != "all":
+                brand_filtered = [p for p in pool if str(p.get("brand")).lower() == brand.lower()]
+                if brand_filtered:
+                    pool = brand_filtered
+
         item = dict(random.choice(pool))
+        
+        # Aplicar marca personalizada si se especificó y no venía de un pool nativo
+        if brand and brand != "all" and item.get("brand", "").lower() != brand.lower():
+            famous_brands = ["apple", "iphone", "ipad", "macbook", "amazon", "echo", "galaxy"]
+            name_lower = item["name"].lower()
+            if not any(fb in name_lower for fb in famous_brands):
+                item["brand"] = brand
+                if not item["name"].lower().startswith(brand.lower()):
+                    item["name"] = f"{brand} {item['name']}"
+            else:
+                item["brand"] = brand
+
         title = item["name"]
         
         # Garantizar que ningún nombre se repita entre ejecuciones ni entre lotes
@@ -233,4 +297,5 @@ class APIProductFetcher:
         cls._save_history()
         
         item["name"] = title
+        item["description"] = cls._clean_description(item.get("description", ""), max_len=250)
         return item
