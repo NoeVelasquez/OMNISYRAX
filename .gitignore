@@ -24,6 +24,7 @@ data/ch_neworders/*
 data/po_csvs/*
 data/pdfs/*
 data/.product_history.json
+data/.translation_cache.json
 !data/.gitkeep
 
 # Archives & Backups
@@ -31,6 +32,10 @@ OMNISYRAX.zip
 backups/
 scratch/
 evidence/
+proyecto-OMNIO
+updatetrackin.txt
+*.txt
+!requirements.txt
 
 # Logs & System Files
 *.log

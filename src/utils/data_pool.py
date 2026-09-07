@@ -556,6 +556,116 @@ CATEGORY_BRAND_SUGGESTIONS = {
     "Tools & Hardware": ["DeWalt", "Makita", "Milwaukee", "Bosch Tools", "Stanley", "Black & Decker"]
 }
 
+BRAND_SPECIFIC_CATALOGS = {
+    # Alimentos / Bebidas
+    "coca-cola": [
+        {"name": "Coca-Cola Original 500ml", "brand": "Coca-Cola", "category": "Food", "description": "Bebida refrescante clásica con el inconfundible y delicioso sabor de Coca-Cola original.", "price": 1.75, "weight": 0.52, "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&auto=format&fit=crop"},
+        {"name": "Coca-Cola Zero Azúcar 600ml", "brand": "Coca-Cola", "category": "Food", "description": "Refresco Coca-Cola sin azúcar con todo el gran sabor y cero calorías.", "price": 1.85, "weight": 0.62, "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop"},
+        {"name": "Coca-Cola Light 355ml (Lata)", "brand": "Coca-Cola", "category": "Food", "description": "Lata de Coca-Cola Light refrescante, ligera y baja en calorías.", "price": 1.25, "weight": 0.38, "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&auto=format&fit=crop"},
+        {"name": "Coca-Cola Pack 12 x 355ml", "brand": "Coca-Cola", "category": "Food", "description": "Pack familiar de 12 latas de Coca-Cola Original para compartir en cualquier ocasión.", "price": 11.99, "weight": 4.5, "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=800&auto=format&fit=crop"},
+        {"name": "Coca-Cola Cherry 355ml", "brand": "Coca-Cola", "category": "Food", "description": "Deliciosa variante de Coca-Cola con un toque irresistible de sabor a cereza.", "price": 1.95, "weight": 0.38, "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=800&auto=format&fit=crop"}
+    ],
+    "pepsi": [
+        {"name": "Pepsi Cola Clásica 500ml", "brand": "Pepsi", "category": "Food", "description": "Bebida carbonatada refrescante y burbujeante con el auténtico sabor de Pepsi.", "price": 1.65, "weight": 0.52, "image": "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=800&auto=format&fit=crop"},
+        {"name": "Pepsi Black Sin Azúcar 600ml", "brand": "Pepsi", "category": "Food", "description": "Máximo sabor refrescante sin azúcar, ideal para disfrutar bien fría.", "price": 1.75, "weight": 0.62, "image": "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=800&auto=format&fit=crop"},
+        {"name": "Pepsi Pack 6 x 355ml", "brand": "Pepsi", "category": "Food", "description": "Pack de 6 latas de refresco Pepsi con intenso sabor carbonatado.", "price": 6.49, "weight": 2.3, "image": "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=800&auto=format&fit=crop"}
+    ],
+    "nestlé": [
+        {"name": "Chocolate KitKat 4 Barras", "brand": "Nestlé", "category": "Food", "description": "Crujiente galleta cubierta con suave chocolate con leche Nestlé.", "price": 1.49, "weight": 0.05, "image": "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=800&auto=format&fit=crop"},
+        {"name": "Nescafé Clásico Café Soluble 200g", "brand": "Nestlé", "category": "Food", "description": "Café soluble puro 100% con aroma rico y sabor tostado inconfundible.", "price": 6.99, "weight": 0.35, "image": "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&auto=format&fit=crop"},
+        {"name": "Cereal Nesquik Chocolate 375g", "brand": "Nestlé", "category": "Food", "description": "Cereal integral de desayuno con irresistible sabor a chocolate enriquecido con vitaminas.", "price": 4.29, "weight": 0.42, "image": "https://images.unsplash.com/photo-1521483451569-e33803c0330c?w=800&auto=format&fit=crop"},
+        {"name": "Leche Condensada La Lechera 397g", "brand": "Nestlé", "category": "Food", "description": "Leche condensada azucarada ideal para postres y repostería de alta calidad.", "price": 2.99, "weight": 0.45, "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&auto=format&fit=crop"}
+    ],
+    "kellogg's": [
+        {"name": "Cereal Zucaritas Frosted Flakes 500g", "brand": "Kellogg's", "category": "Food", "description": "Hojuelas de maíz escarchadas con azúcar para un desayuno lleno de energía.", "price": 4.99, "weight": 0.55, "image": "https://images.unsplash.com/photo-1521483451569-e33803c0330c?w=800&auto=format&fit=crop"},
+        {"name": "Cereal Corn Flakes Clásico 450g", "brand": "Kellogg's", "category": "Food", "description": "El cereal tradicional de hojuelas de maíz tostadas de Kellogg's.", "price": 4.29, "weight": 0.50, "image": "https://images.unsplash.com/photo-1521483451569-e33803c0330c?w=800&auto=format&fit=crop"},
+        {"name": "Cereal Froot Loops 400g", "brand": "Kellogg's", "category": "Food", "description": "Aros de cereal con sabores frutales naturales y divertidos colores.", "price": 4.79, "weight": 0.45, "image": "https://images.unsplash.com/photo-1521483451569-e33803c0330c?w=800&auto=format&fit=crop"}
+    ],
+    "kraft": [
+        {"name": "Kraft Macaroni & Cheese Original 206g", "brand": "Kraft", "category": "Food", "description": "La clásica pasta de macarrones con auténtica salsa cremosa de queso cheddar.", "price": 1.99, "weight": 0.22, "image": "https://images.unsplash.com/photo-1621996346565-e3d5d628151c?w=800&auto=format&fit=crop"},
+        {"name": "Kraft Real Mayo Mayonesa 443ml", "brand": "Kraft", "category": "Food", "description": "Mayonesa cremosa elaborada con huevos de granja y aceite de primera calidad.", "price": 3.89, "weight": 0.48, "image": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop"},
+        {"name": "Kraft Singles Queso Americano 16 Rebanadas", "brand": "Kraft", "category": "Food", "description": "Rebanadas individuales de queso pasteurizado americano, ideales para sándwiches y hamburguesas.", "price": 3.99, "weight": 0.34, "image": "https://images.unsplash.com/photo-1621996346565-e3d5d628151c?w=800&auto=format&fit=crop"}
+    ],
+    "danone": [
+        {"name": "Yogur Danone Natural 4 x 125g", "brand": "Danone", "category": "Food", "description": "Pack de 4 yogures naturales cremosos elaborados con leche fresca seleccionada.", "price": 2.49, "weight": 0.55, "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop"},
+        {"name": "Yogur Griego Oikos Vainilla 150g", "brand": "Danone", "category": "Food", "description": "Yogur estilo griego extra cremoso con un delicado toque de vainilla natural.", "price": 1.79, "weight": 0.16, "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop"},
+        {"name": "Activia Fibra y Frutas 4 x 120g", "brand": "Danone", "category": "Food", "description": "Yogur probiótico con trozos de frutas y fibra para ayudar a la digestión diaria.", "price": 2.99, "weight": 0.52, "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop"}
+    ],
+
+    # Libros / Editoriales
+    "penguin": [
+        {"name": "Libro: 1984", "brand": "Penguin", "category": "Books", "description": "Edición clásica de la obra maestra distópica 1984 por George Orwell.", "price": 14.99, "weight": 0.35, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"},
+        {"name": "Libro: Orgullo y Prejuicio", "brand": "Penguin", "category": "Books", "description": "Edición especial de Penguin Classics de Orgullo y Prejuicio por Jane Austen.", "price": 12.99, "weight": 0.40, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"},
+        {"name": "Libro: El Gran Gatsby", "brand": "Penguin", "category": "Books", "description": "Edición de lujo de El Gran Gatsby por F. Scott Fitzgerald.", "price": 13.50, "weight": 0.32, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"},
+        {"name": "Libro: Cien Años de Soledad", "brand": "Penguin", "category": "Books", "description": "La emblemática novela cumbre del realismo mágico por Gabriel García Márquez.", "price": 18.90, "weight": 0.50, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"}
+    ],
+    "harpercollins": [
+        {"name": "Libro: El Hobbit", "brand": "HarperCollins", "category": "Books", "description": "La aventura épica inolvidable de Bilbo Bolsón por J.R.R. Tolkien.", "price": 16.99, "weight": 0.42, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"},
+        {"name": "Libro: El Señor de los Anillos", "brand": "HarperCollins", "category": "Books", "description": "Edición completa de la trilogía fundamental de fantasía por J.R.R. Tolkien.", "price": 29.99, "weight": 1.10, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"},
+        {"name": "Libro: Las Crónicas de Narnia", "brand": "HarperCollins", "category": "Books", "description": "Colección completa del mágico mundo de Narnia por C.S. Lewis.", "price": 24.50, "weight": 0.85, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"}
+    ],
+    "random house": [
+        {"name": "Libro: Matar a un Ruiseñor", "brand": "Random House", "category": "Books", "description": "Edición clásica de Matar a un Ruiseñor por Harper Lee.", "price": 15.20, "weight": 0.38, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"},
+        {"name": "Libro: Sapiens: De animales a dioses", "brand": "Random House", "category": "Books", "description": "Breve historia de la humanidad por Yuval Noah Harari.", "price": 21.90, "weight": 0.55, "image": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop"}
+    ],
+
+    # Ropa y Calzado / Ropa Deportiva
+    "nike": [
+        {"name": "Zapatillas Nike Air Max SC", "brand": "Nike", "category": "Clothing", "description": "Zapatillas deportivas con amortiguación Air visible para comodidad todo el día.", "price": 89.99, "weight": 0.85, "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop"},
+        {"name": "Camiseta Deportiva Nike Dri-FIT", "brand": "Nike", "category": "Clothing", "description": "Camiseta ligera y transpirable con tecnología absorbente de sudor Dri-FIT.", "price": 34.99, "weight": 0.20, "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop"},
+        {"name": "Sudadera Nike Club Fleece con Capucha", "brand": "Nike", "category": "Clothing", "description": "Sudadera clásica con forro polar cepillado para una calidez suave y cómoda.", "price": 64.99, "weight": 0.60, "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop"},
+        {"name": "Mochila Nike Elemental 21L", "brand": "Nike", "category": "Clothing", "description": "Mochila espaciosa con múltiples compartimentos para entrenamiento y uso diario.", "price": 39.99, "weight": 0.45, "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop"}
+    ],
+    "adidas": [
+        {"name": "Zapatillas Adidas Ultraboost Light", "brand": "Adidas", "category": "Clothing", "description": "Calzado de running de alto rendimiento con amortiguación Boost ultrasensible.", "price": 149.99, "weight": 0.80, "image": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop"},
+        {"name": "Zapatillas Adidas Superstar Clásicas", "brand": "Adidas", "category": "Clothing", "description": "El icónico diseño de puntera de concha que definió el estilo urbano contemporáneo.", "price": 99.99, "weight": 0.85, "image": "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=800&auto=format&fit=crop"},
+        {"name": "Chaqueta Adidas Essentials 3 Franjas", "brand": "Adidas", "category": "Clothing", "description": "Chaqueta deportiva de corte clásico confeccionada en tejido suave y duradero.", "price": 59.99, "weight": 0.50, "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop"}
+    ],
+    "puma": [
+        {"name": "Zapatillas Puma Suede Classic XXI", "brand": "Puma", "category": "Clothing", "description": "Zapatillas legendarias de ante suave con el diseño atemporal y deportivo de Puma.", "price": 74.99, "weight": 0.75, "image": "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop"},
+        {"name": "Sudadera Puma ESS Logo Hoodie", "brand": "Puma", "category": "Clothing", "description": "Sudadera de corte regular con el llamativo logotipo de Puma estampado en el pecho.", "price": 49.99, "weight": 0.55, "image": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop"}
+    ],
+
+    # Electrónica
+    "apple": [
+        {"name": "Apple iPhone 15 Pro 128GB", "brand": "Apple", "category": "Electronics", "description": "Smartphone de titanio de grado aeroespacial con chip A17 Pro y cámara de 48 MP.", "price": 999.00, "weight": 0.18, "image": "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=800&auto=format&fit=crop"},
+        {"name": "Apple AirPods Pro (2.ª generación)", "brand": "Apple", "category": "Electronics", "description": "Auriculares inalámbricos con cancelación activa de ruido 2x y audio espacial.", "price": 249.00, "weight": 0.05, "image": "https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=800&auto=format&fit=crop"},
+        {"name": "Apple Watch Series 9 GPS 45mm", "brand": "Apple", "category": "Electronics", "description": "Reloj inteligente avanzado con pantalla Retina brillante y sensor de salud potente.", "price": 429.00, "weight": 0.04, "image": "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=800&auto=format&fit=crop"},
+        {"name": "Apple MacBook Air 13\" Chip M2", "brand": "Apple", "category": "Electronics", "description": "Portátil ultraligero y silencioso con pantalla Liquid Retina y batería de 18 horas.", "price": 1099.00, "weight": 1.24, "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop"}
+    ],
+    "samsung": [
+        {"name": "Samsung Galaxy S24 Ultra 256GB", "brand": "Samsung", "category": "Electronics", "description": "Smartphone insignia con Galaxy AI, marco de titanio y cámara de 200 MP.", "price": 1199.99, "weight": 0.23, "image": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=800&auto=format&fit=crop"},
+        {"name": "Samsung Galaxy Buds2 Pro", "brand": "Samsung", "category": "Electronics", "description": "Auriculares inalámbricos de alta fidelidad de 24 bits con cancelación activa de ruido.", "price": 189.99, "weight": 0.05, "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&auto=format&fit=crop"},
+        {"name": "Samsung Smart TV 55\" Crystal UHD 4K", "brand": "Samsung", "category": "Electronics", "description": "Televisor inteligente 4K con procesador Crystal, HDR y diseño sin bordes.", "price": 449.99, "weight": 14.2, "image": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=800&auto=format&fit=crop"}
+    ],
+    "sony": [
+        {"name": "Sony WH-1000XM5 Auriculares Inalámbricos", "brand": "Sony", "category": "Electronics", "description": "Líderes en cancelación de ruido con audio de alta resolución y llamadas nítidas.", "price": 399.99, "weight": 0.25, "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop"},
+        {"name": "Sony PlayStation 5 Consola", "brand": "Sony", "category": "Electronics", "description": "Consola de videojuegos de última generación con gráficos 4K y SSD ultrarrápido.", "price": 499.99, "weight": 4.5, "image": "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=800&auto=format&fit=crop"}
+    ],
+
+    # Joyería y Accesorios
+    "pandora": [
+        {"name": "Pulsera Moments de Cadena de Serpiente Pandora", "brand": "Pandora", "category": "Jewelry & Accessories", "description": "Elegante pulsera icónica acabada a mano en plata de primera ley.", "price": 75.00, "weight": 0.03, "image": "https://images.unsplash.com/photo-1611591475155-4286fb7c2e74?w=800&auto=format&fit=crop"},
+        {"name": "Charm Colgante Corazón Brillante Pandora", "brand": "Pandora", "category": "Jewelry & Accessories", "description": "Charm en forma de corazón con circonitas cúbicas transparentes engastadas.", "price": 45.00, "weight": 0.01, "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&auto=format&fit=crop"},
+        {"name": "Anillo Tiara Real de Plata Pandora", "brand": "Pandora", "category": "Jewelry & Accessories", "description": "Anillo decorado con motivos de tiara y detalles brillantes en plata de ley.", "price": 55.00, "weight": 0.01, "image": "https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&auto=format&fit=crop"}
+    ],
+    "casio": [
+        {"name": "Reloj Digital Casio Vintage A168WA", "brand": "Casio", "category": "Jewelry & Accessories", "description": "Reloj unisex de estilo retro con pulsera de acero inoxidable y luz Illuminator.", "price": 32.00, "weight": 0.08, "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&auto=format&fit=crop"},
+        {"name": "Reloj Casio G-Shock GA-2100", "brand": "Casio", "category": "Jewelry & Accessories", "description": "Estructura de carbono resistente a impactos, sumergible a 200 metros.", "price": 99.00, "weight": 0.12, "image": "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&auto=format&fit=crop"}
+    ],
+
+    # Juguetes
+    "lego": [
+        {"name": "LEGO Star Wars Halcón Milenario", "brand": "LEGO", "category": "Toys", "description": "Set de construcción detallado de la nave espacial más famosa de la galaxia.", "price": 169.99, "weight": 1.95, "image": "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=800&auto=format&fit=crop"},
+        {"name": "LEGO Icons Ramo de Flores", "brand": "LEGO", "category": "Toys", "description": "Hermoso set botánico decorativo con rosas, margaritas y amapolas para armar.", "price": 59.99, "weight": 0.75, "image": "https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=800&auto=format&fit=crop"},
+        {"name": "LEGO City Estación de Policía", "brand": "LEGO", "category": "Toys", "description": "Set de acción con patrulla policial, helicóptero y figuras de oficiales.", "price": 69.99, "weight": 1.20, "image": "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&auto=format&fit=crop"}
+    ],
+    "mattel": [
+        {"name": "Barbie Muñeca Fashionista Vestido Floral", "brand": "Mattel", "category": "Toys", "description": "Muñeca Barbie con atuendo moderno y accesorios a la moda.", "price": 14.99, "weight": 0.25, "image": "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=800&auto=format&fit=crop"},
+        {"name": "Hot Wheels Pack 5 Coches de Carreras", "brand": "Mattel", "category": "Toys", "description": "Colección de 5 vehículos a escala 1:64 con diseños de alta velocidad.", "price": 8.99, "weight": 0.30, "image": "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=800&auto=format&fit=crop"}
+    ]
+}
+
 REAL_CATEGORY_IMAGES = {
     "Electronics": [
         "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop",

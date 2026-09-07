@@ -16,7 +16,7 @@ class ProductGenerator(BaseGenerator):
         
     def generate_single(self) -> Product:
         # Intentar obtener un producto real en vivo desde APIs externas
-        live_data = APIProductFetcher.get_live_product(category=self.selected_category, brand=self.selected_brand)
+        live_data = APIProductFetcher.get_live_product(category=self.selected_category, brand=self.selected_brand, lang=self.lang)
         
         if live_data:
             product_name = live_data["name"]

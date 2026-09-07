@@ -1,0 +1,3656 @@
+[
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/activity_logs",
+    "summary": "Returns all Activity Logs"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/addresses",
+    "summary": "Returns all Address"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/addresses",
+    "summary": "Save a new Address"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/addresses/{address_id}",
+    "summary": "Get single Address by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/addresses/{address}",
+    "summary": "Update a Address"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/addresses/{address}",
+    "summary": "Delete a Address"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/alerts",
+    "summary": "Returns all Alerts"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/alerts",
+    "summary": "Save a new Alert"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/alerts/{alert_id}",
+    "summary": "Get single Alert by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/alerts/{alert}",
+    "summary": "Update a Alert"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/alerts/{alert}",
+    "summary": "Delete a Alert"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/alerts/store-bulk",
+    "summary": "Save bulk Alerts"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/boxes",
+    "summary": "Returns all Boxes"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/boxes",
+    "summary": "Save a new Box"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/boxes/{box_id}",
+    "summary": "Get single Box by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/boxes/{box_id}",
+    "summary": "Update a Box"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/boxes/{box_id}",
+    "summary": "Delete a Box"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/boxes/store-bulk",
+    "summary": "Save bulk boxes"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/boxes/destroy-bulk",
+    "summary": "Delete bulk boxes"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/box_items",
+    "summary": "Returns all Box Items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/box_items",
+    "summary": "Save a new Box Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/box_items/{box_item_id}",
+    "summary": "Get single Box Item by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/box_items/{box_item_id}",
+    "summary": "Update a Box Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/box_items/{box_item_id}",
+    "summary": "Delete a Box Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/box_items/store-bulk",
+    "summary": "Save bulk boxItems"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/box_items/update-bulk",
+    "summary": "Update bulk boxItems"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/brands",
+    "summary": "Returns all Brands"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/brands",
+    "summary": "Save a new Brand"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/brand/{brand_id}",
+    "summary": "Get single Brand by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/brands/{brand_id}",
+    "summary": "Update a Brand"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/brands/{brand_id}",
+    "summary": "Delete a Brand"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/carriers",
+    "summary": "Returns all Carriers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/carriers",
+    "summary": "Store a Carriers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/carriers/{carrier_id}",
+    "summary": "Update a Carriers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/carriers/{carrier_id}",
+    "summary": "Delete a Carriers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/categories",
+    "summary": "Returns all Categories"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/categories",
+    "summary": "Save a new Category"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/categories/{category_id}",
+    "summary": "Get single Category by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/categories/{category_id}",
+    "summary": "Update a Category"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/categories/{category_id}",
+    "summary": "Delete a Category"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/contacts",
+    "summary": "Returns all Contacts"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/contacts",
+    "summary": "Save a new Contact"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/contact/{contact_id}",
+    "summary": "Get single Contact by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/contacts/{contact}",
+    "summary": "Update a Contact"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/contacts/{contact}",
+    "summary": "Delete a Contact"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/currencies",
+    "summary": "Returns all currencies"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/currencies",
+    "summary": "Save a new Currency"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/currencies/{currency_id}",
+    "summary": "Get single Currency by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/currencies/{currency_id}",
+    "summary": "Update a Currency"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/currencies/{currency_id}",
+    "summary": "Delete a Currency"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/update-tracking",
+    "summary": "Service update tracking "
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/update-inventory",
+    "summary": "Service update inventory "
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/confirm-order",
+    "summary": "Service Confirm Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/cancel-order",
+    "summary": "Service Cancel Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/webhooks/shipedge/orders/canceled_v2",
+    "summary": "Service Cancel Order By Shipment"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/filters",
+    "summary": "Returns all Filters"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/filters",
+    "summary": "Save a new Filter"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/filters/{filter_id}",
+    "summary": "Get single Filter by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/filters/{filter_id}",
+    "summary": "Update a Filter by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/filters/{filter_id}",
+    "summary": "Delete a Filter by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/flows",
+    "summary": "Returns all Flows"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/flows",
+    "summary": "Save a new Flow"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/flows/{flow_id}",
+    "summary": "Get single flow by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/flows/{flow_id}",
+    "summary": "Update a flow by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/flows/{flow_id}",
+    "summary": "Delete a Flow by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/flows/{flow_id}/assign-processes",
+    "summary": "Assign processes to flow"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/flows/destroy-bulk",
+    "summary": "Delete flows in bulk"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/flowables",
+    "summary": "Returns all Flowables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/flowables",
+    "summary": "Save a new Flowable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/flowables/{flowable_id}",
+    "summary": "Update a Flowable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/flowables/{flowable_id}",
+    "summary": "Delete a Flowable by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/flowables/destroy-bulk",
+    "summary": "Delete flowables in bulk"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/forecasting/execute",
+    "summary": "Forecasting execute"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/forecasting/upload-csv",
+    "summary": "Forecasting upload csv"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/forecasting",
+    "summary": "Forecasting"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/groups",
+    "summary": "Returns all Groups"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/groups",
+    "summary": "Save a new Group"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/groups/{group_id}",
+    "summary": "Get single Order by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/groups/{group_id}",
+    "summary": "Update a Group"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/groups/{group_id}",
+    "summary": "Delete a Group"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/headers-package",
+    "summary": "Returns all headers package"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/headers-package",
+    "summary": "Save a new HeaderPackage"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/headers-package/{header_package_id}",
+    "summary": "Get single header package by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/headers-package/{header_package_id}",
+    "summary": "Update a HeaderPackage"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/headers-package/{header_package_id}",
+    "summary": "Delete a HeaderPackage"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/ilocs",
+    "summary": "Returns all Ilocs"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/ilocs",
+    "summary": "Save a new Iloc"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/ilocs/{iloc_id}",
+    "summary": "Get single Ilocs by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/ilocs/{iloc_id}",
+    "summary": "Update an Iloc"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/ilocs/{iloc_id}",
+    "summary": "Delete an Iloc"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PATCH",
+    "path": "/tenants/{tenant_id}/ilocs/{iloc_id}/archive-iloc",
+    "summary": "Archive an Iloc"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/services/import-products",
+    "summary": "Import Orders"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/liq-list",
+    "summary": "Returns all last inventory quantities"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/liq-list-gbiloc",
+    "summary": "Returns all last inventory quantities group ilocs"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mappeables",
+    "summary": "Save a new Mappeable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/mappeables/{mappeable_id}",
+    "summary": "Update a new Mappeable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/mappeables/{mappeable_id}",
+    "summary": "Delete a Mappeable by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/mappers",
+    "summary": "Returns all Mapper"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mappers",
+    "summary": "Save a Mapper"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/mappers/{mapper_id}",
+    "summary": "Get single mapper by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/mappers/{mapper_id}",
+    "summary": "Update a Mapper"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/mappers/{mapper_id}",
+    "summary": "Delete a Mapper"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mappers/store-bulk",
+    "summary": "Store bulk Mappers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/mediables",
+    "summary": "Returns all Mediables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mediables",
+    "summary": "Save a new Mediable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mediables/mediable_id",
+    "summary": "Save a new Mediable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/mediables/{mediable_id}",
+    "summary": "Delete a Mediable by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mediables/store-bulk",
+    "summary": "Store Mediables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/mediables/destroy-bulk",
+    "summary": "Destroy Mediables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/metadata",
+    "summary": "Returns all metadata"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/metadata",
+    "summary": "Save a Maetadata"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/metadata/{metadata_id}",
+    "summary": "Get single metadata by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/metadata/{metadata_id}",
+    "summary": "Update a Metadata"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/metadata/{metadata_id}",
+    "summary": "Delete a Metadata"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/metadata/store-bulk",
+    "summary": "Store metadatas"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/metadata/destroy-bulk",
+    "summary": "Delete bulk metadatas"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/method-translators",
+    "summary": "Returns all Method Translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/method-translators",
+    "summary": "Save a new Method Translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/method-translators/{method_translator_id}",
+    "summary": "Get single Method Translator by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/method-translators/{method_translators_id}",
+    "summary": "Update a Method Translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/method-translators/{method_translators_id}",
+    "summary": "Delete a Method Translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/method-translators/store-bulk",
+    "summary": "Insert method translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/method-translators/store-by-csv",
+    "summary": "upload csv file in base64 for create method translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/method-translators/destroy-bulk",
+    "summary": "Delete method translator in bulk"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/method-translators/store-update-bulk",
+    "summary": "Insert Or Update method translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/services/migrate-orders",
+    "summary": "Migrate orders"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/networks",
+    "summary": "Returns all Networks"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/networks",
+    "summary": "Save a new Networks"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/networks/{network_id}",
+    "summary": "Update an Network"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/networks/{network_id}",
+    "summary": "Delete a Network"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/notes",
+    "summary": "Returns all Notes"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/notes",
+    "summary": "Save a new note"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/notes/{note_id}",
+    "summary": "Get single note by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/notes/{note}",
+    "summary": "Update a Notes"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/notes/{note}",
+    "summary": "Delete a Note"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/options",
+    "summary": "Returns all Options"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/options",
+    "summary": "Save a new Option"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/options/{option_id}",
+    "summary": "Get single Option by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/options/{option_id}",
+    "summary": "Update a Option"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/options/{order_id}",
+    "summary": "Delete a Option"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/options/destroy-bulk",
+    "summary": "Delete bulk optionss"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/option-sku",
+    "summary": "Returns all Option Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/option-sku",
+    "summary": "Save a new Option Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/option-sku/{option_sku_id}",
+    "summary": "Get single Option Sku by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/option-sku/{option_sku_id}",
+    "summary": "Update a Option Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/option-sku/{option_sku_id}",
+    "summary": "Delete a Option Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/option-sku/store-bulk",
+    "summary": "Save various Options Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/option-sku/update-bulk",
+    "summary": "Update various Options Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/orders/cancel-bulk",
+    "summary": "Cancel bulk orders"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/orders/update-status/{order_id}",
+    "summary": "Update Order Status"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/orders",
+    "summary": "Returns all Orders"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/orders",
+    "summary": "Save a new Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/orders/{order_id}",
+    "summary": "Get single Order by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/orders/{order_id}",
+    "summary": "Update a Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/orders/{order_id}",
+    "summary": "Delete a Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/orders/upload-files/{order_id}",
+    "summary": "create files in bulk for order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/orders/print-invoice/{order_id}",
+    "summary": "Print a Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/order-items",
+    "summary": "Returns all Order Items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/order-items",
+    "summary": "Save a new Order Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/order-items/{order_item_id}",
+    "summary": "Get single Order Item by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/order-items/{order_item_id}",
+    "summary": "Update a Order Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/order-items/{order_item_id}",
+    "summary": "Delete a Order Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/order-items/store-bulk",
+    "summary": "Save bulk order items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/order-items/destroy-bulk",
+    "summary": "Delete bulk metadatas"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/order-items/update-bulk",
+    "summary": "Update bulk order items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/organizations",
+    "summary": "Returns all Organizations"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/organizations",
+    "summary": "Save a new Organization"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/organizations/{organization_id}",
+    "summary": "Get single Order by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/organizations/{organization_id}",
+    "summary": "Update a Organization"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/organizations/{organization_id}",
+    "summary": "Delete a Organization"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/organization-group",
+    "summary": "Save a new OrganizationGroup"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/organization-group/{organization_id}",
+    "summary": "Delete a OrganizationGroup"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/packages",
+    "summary": "Returns all Packages"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/packages",
+    "summary": "Save a new Package"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/packages/{package_id}",
+    "summary": "Get single Package by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/packages/{package_id}",
+    "summary": "Update a Package"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/packages/{package_id}",
+    "summary": "Delete a Package"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/packages/store-bulk",
+    "summary": "Save bulk packages"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/packageables",
+    "summary": "Returns all Packageable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/packageables/{packageable_id}",
+    "summary": "Update a Packageables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/packing-template",
+    "summary": "Save a new packingTemplate"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/packing-template/{packing_template_id}",
+    "summary": "Update a packing-template"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/packing-template/{packing_template_id}",
+    "summary": "Delete a Packing Template"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/pre-shipments",
+    "summary": "Returns all pre shipments"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/pre-shipments/{pre_shipment_id}",
+    "summary": "Get single pre shipment by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/pre-shipments/{pre_shipment_id}",
+    "summary": "Update a Pre Shipment"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/pre-shipments/{pre_shipment_id}",
+    "summary": "Delete a Pre Shipment"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/pre-shipments/store-bulk",
+    "summary": "Save bulk pre shipments"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/prices",
+    "summary": "Returns all prices"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/prices",
+    "summary": "Save a new Price"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/prices/{price_id}",
+    "summary": "Get single Price by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/prices/{price_id}",
+    "summary": "Update a Price"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/prices/{price_id}",
+    "summary": "Delete a Price"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/products",
+    "summary": "Returns all Products"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/products",
+    "summary": "Save a new Product"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/products/{product_id}",
+    "summary": "Get single Product by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/products/{product_id}",
+    "summary": "Update a Product"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/products/{product_id}",
+    "summary": "Delete a Product"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/products/sync-products",
+    "summary": "Sync Products"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/publications",
+    "summary": "Returns all publications"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/publications",
+    "summary": "Save a new Publication"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/publications/{publication_id}",
+    "summary": "Get single Publication by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/publications/{publication_id}",
+    "summary": "Update a Publication"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/publications/{publication_id}",
+    "summary": "Delete a Publication"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/purchase-order",
+    "summary": "Returns all Purchase Orders"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/purchase-order",
+    "summary": "Save a new Purchase Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/purchase-order/{purchase_order_id}",
+    "summary": "Get single Purchase Order by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/purchase-order/{purchase_order_id}",
+    "summary": "Update a Purchase Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/purchase-order/{purchase_order_id}",
+    "summary": "Delete a Purchase Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/purchase-order/store-by-csv",
+    "summary": "create purchase orders by csv"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/purchase-order-item",
+    "summary": "Returns all Purchase Order Items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/purchase-order-item",
+    "summary": "Save a new Purchase Order Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/purchase-order-item/{purchase_order_item_id}",
+    "summary": "Get single Purchase Order Item by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/purchase-order-item/{purchase_order_item_id}",
+    "summary": "Update a Purchase Order Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/purchase-order-item/{purchase_order_item_id}",
+    "summary": "Delete a Purchase Order Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/purchase-order-item/store-bulk",
+    "summary": "Save bulk order items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/purchase-order-item/destroy-bulk",
+    "summary": "Delete in bulk Purchase Order Items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/rates",
+    "summary": "Returns all Rates"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/rates",
+    "summary": "Save a new Rate"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/rates/{rate_id}",
+    "summary": "Update a Rate"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/rates/{rate_id}",
+    "summary": "Delete a Rate"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/rates/store-bulk",
+    "summary": "Store bulk Rates"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/rates/destroy-bulk",
+    "summary": "Delete rates"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/regionable",
+    "summary": "Returns all regionable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/regionable",
+    "summary": "Save a new Regionable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/regionable/{regionable_id}",
+    "summary": "Get single Regionable by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/regionable/{regionable_id}",
+    "summary": "Update a regionable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/regionable/{regionable_id}",
+    "summary": "Delete a regionable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/regionable/store-bulk",
+    "summary": "Insert regionables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/regionable/delete-bulk",
+    "summary": "Delete regionables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/orders/sales/processes",
+    "summary": "Report Sales by process"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/return-item",
+    "summary": "Get all Returns Items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/return-item",
+    "summary": "Save a new return item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/return-item/{return_item_id}",
+    "summary": "Get single Return Item by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/return-item/{return_item_id}",
+    "summary": "Update a Return Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/return-item/{return_item_id}",
+    "summary": "Delete a Return Item"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/return-item/store-bulk",
+    "summary": "Save bulk return items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/return-item/destroy-bulk",
+    "summary": "Delete Return Items"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/returns",
+    "summary": "Get all Returns"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/returns",
+    "summary": "Save a new return"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/returns/{return_id}",
+    "summary": "Get single Return by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/returns/{return_id}",
+    "summary": "Update a Return"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/returns/{return_id}",
+    "summary": "Delete a Return"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/service-order",
+    "summary": "Returns all Service Orders"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/service-order",
+    "summary": "Save a new Service Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/service-order/{service_order_id}",
+    "summary": "Get single Order by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/service-order/{service_order_id}",
+    "summary": "Update a Service Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/service-order/{service_order_id}",
+    "summary": "Delete a Service Order"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/service-order/store-by-csv",
+    "summary": "create service order by csv"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/shipments",
+    "summary": "Returns all Shipments"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/shipments",
+    "summary": "Save a new Shipment"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/shipments/{shipment_id}",
+    "summary": "Get single Shipment by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/shipments/{shipment_id}",
+    "summary": "Update a Shipment"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/shipments/{shipment_id}",
+    "summary": "Delete a Shipment"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/shipments/store-bulk",
+    "summary": "Save bulk shipments"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/shipments/update-bulk",
+    "summary": "Update bulk shipments"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/shipments/actions",
+    "summary": "Actions shipments"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/shipping-methods",
+    "summary": "Returns all Shipping methods"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/shipping-methods",
+    "summary": "Store a Shipping Methods"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/shipping-methods/{shipping_method_id}",
+    "summary": "Update a Shipping Methods"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/shipping-methods/{shipping_method_id}",
+    "summary": "Delete a Shipping Methods"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/shipping-methods/update-bulk",
+    "summary": "Update a Shipping Methods"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/sku-alternative",
+    "summary": "Returns all SkuAlternatives"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-alternative",
+    "summary": "Save a new SkuAlternative"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/sku-alternative/{sku_alternative}",
+    "summary": "Get single Sku Alternative by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/sku-alternative/{sku_alternative}",
+    "summary": "Update a Sku Alternative"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/sku-alternative/{sku_alternative}",
+    "summary": "Delete a Sku Alternative"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-alternative/store-bulk",
+    "summary": "Store many Sku Alternative"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-alternative/delete-bulk",
+    "summary": "Delete many Sku Alternative"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/skus",
+    "summary": "Returns all Skus"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/skus",
+    "summary": "Save a new Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/skus/{sku_id}",
+    "summary": "Get single Sku by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/skus/{sku_id}",
+    "summary": "Update a Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/skus/{sku_id}",
+    "summary": "Delete a Sku"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/skus/store-bulk",
+    "summary": "Save Skus in bulk"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/synsets/{synset_id}/sync-skus",
+    "summary": "Save Skus for Synset"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/skus/store-by-csv",
+    "summary": "create skus by csv"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/sku-shipping-data",
+    "summary": "Returns all Sku Shipping Data"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-shipping-data",
+    "summary": "Save a new Sku Shipping Data"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/sku-shipping-data/{sku_shipping_data_id}",
+    "summary": "Get single SKu Shipping Data by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/sku-shipping-data/{sku_shipping_data_id}",
+    "summary": "Update a Sku Shipping Data"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/sku-shipping-data/{sku_shipping_data_id}",
+    "summary": "Delete a Sku Shipping Data"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-supplier",
+    "summary": "Save a new Sku Supplier"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/suppliers/{sku_supplier_id}",
+    "summary": "Save a news Sku Suppliers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/suppliers/{sku_supplier_id}",
+    "summary": "Delete a Sku Supplier"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/flows/sku-supplier",
+    "summary": "Delete Sku Supplier"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/sku-translator",
+    "summary": "Returns all SkusTranslates"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-translator",
+    "summary": "Save a new SkuTranslator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/sku-translator/{sku_translator}",
+    "summary": "Get single SkuTranslator by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/sku-translator/{sku_translator}",
+    "summary": "Update a Sku translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/sku-translator/{sku_translator}",
+    "summary": "Delete a Sku Translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-translator/upload-csv",
+    "summary": "upload csv file in base64 for create sku translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/sku-translator/destroy-bulk",
+    "summary": "Delete sku translator in bulk"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/statuses",
+    "summary": "Returns all Statuses"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/suppliers",
+    "summary": "Returns all Suppliers"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/suppliers",
+    "summary": "Save a new Supplier"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/suppliers/{supplier_id}",
+    "summary": "Get single Supplier by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/suppliers/{supplier_id}",
+    "summary": "Update a Supplier"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/suppliers/{supplier_id}",
+    "summary": "Delete a Supplier"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/tags",
+    "summary": "Returns all Tag"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/tags",
+    "summary": "Save a new Tag"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/tags/{tag_id}",
+    "summary": "Delete a Tag"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/taggables",
+    "summary": "Save a new Taggable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/taggables/{taggable_id}",
+    "summary": "Delete a Taggable"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/taggables/store-bulk",
+    "summary": "Store bulk taggables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/taggables/delete-bulk",
+    "summary": "Delete bulk taggables"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/notifications",
+    "summary": "Returns all Notifications"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/notifications",
+    "summary": "Save a new Tenant Notification"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/notifications/{tenant_notification_id}",
+    "summary": "Get Single Tenant Notification by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/notifications/{tenant_notification_id}",
+    "summary": "Update a Tenant Notification"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/notifications/{tenant_notification_id}",
+    "summary": "Delete a TenantNotification"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/notifications/store-bulk",
+    "summary": "Store bulk Tenant Notifications"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/report",
+    "summary": "Returns all Reports"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/report",
+    "summary": "Save a new Report"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/report/{report_id}",
+    "summary": "Get single Rerport by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/report/{report_id}",
+    "summary": "Update a Report"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/report/{report_id}",
+    "summary": "Delete a Report"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/report/export-csv",
+    "summary": "export skus by csv"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/translator",
+    "summary": "Returns all Translators"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "GET",
+    "path": "/tenants/{tenant_id}/translator/{translator_id}",
+    "summary": "Get single Translator by ID"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/translators",
+    "summary": "Save a new Translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "PUT",
+    "path": "/tenants/{tenant_id}/translators/{translator_id}",
+    "summary": "Update a Translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "DELETE",
+    "path": "/tenants/{tenant_id}/translators/{translator_id}",
+    "summary": "Delete a Translator"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/webhooks/shipedge/inventory/changes",
+    "summary": "Launch when changes on inventory"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/webhooks/shipedge/orders/canceled",
+    "summary": "Cancel Order from Shipedge"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/webhooks/shipedge/orders/shipped",
+    "summary": "Shipped Order from Shipedge"
+  },
+  {
+    "spec": "api-docs-tenant",
+    "method": "POST",
+    "path": "/tenants/{tenant_id}/webhooks/shipedge/returns/completed",
+    "summary": "Process a simple return order received"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/access_shipedge",
+    "summary": "Returns all access  with oms the  shipedge"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/access_shipedge",
+    "summary": "Save a new  Access omnio to shipedge oms"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/access_shipedge/{access_shipedge_id}",
+    "summary": "Get single Access Shipedge by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/access_shipedge/{access_shipedge_id}",
+    "summary": "Update a access shipedge "
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/access_shipedge/{access_shipedge_id}",
+    "summary": "Delete a Access Shipedge  relation"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/access_shipedge/access_shipedge_id",
+    "summary": "Save a new  Iloc from Access Shipedge"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/access_shipedge/{access_shipedge_id}/sync-branches",
+    "summary": "sync branches a home"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/actions",
+    "summary": "Returns all Actions"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/actions",
+    "summary": "Save a new Action"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/actions/{action_id}",
+    "summary": "Get single action by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/actions/{action_id}",
+    "summary": "Update a action by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/actions/{action_id}",
+    "summary": "Delete a Action"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/app_services",
+    "summary": "Returns all app_services"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/app_services",
+    "summary": "Save a new AppService"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/app_services/{app_service_id}",
+    "summary": "Get single AppService by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/app_services/{app_service_id}",
+    "summary": "Update a AppService"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/app_services/{app_service_id}",
+    "summary": "Delete a AppService"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/authentications",
+    "summary": "Returns all authentications"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/authentications",
+    "summary": "Save a new authentication"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/authentications/{authentication_id}",
+    "summary": "Get single authentication by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/authentications/{authentication_id}",
+    "summary": "Update a authentication"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/authentications/{authentication_id}",
+    "summary": "Delete a authentication"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/category_flows",
+    "summary": "Returns all Category Flow"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/category_flows",
+    "summary": "Save a new Category Flow"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/category_flows/{category_flow_id}",
+    "summary": "Get single category flow by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/category_flows/{category_flow_id}",
+    "summary": "Update a category flow by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/category_flows/{category_flow_id}",
+    "summary": "Delete a Category Flow"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/cluster",
+    "summary": "Returns all cluster"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/cluster",
+    "summary": "Save a new cluster"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/cluster/{cluster_id}",
+    "summary": "Get single cluster by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/cluster/{cluster_id}",
+    "summary": "Update a cluster"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/cluster/{cluster_id}",
+    "summary": "Delete a cluster"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/companies/{company}/users",
+    "summary": "Returns all users of a company from the authenticated user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/companies",
+    "summary": "Returns all companies"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/companies",
+    "summary": "Save a new companies "
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/companies/{company_id}",
+    "summary": "Get a Company"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/companies/{company_id}",
+    "summary": "Update a company"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/company/{company_id}",
+    "summary": "Delete a company and its schema"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/companies/{company_id}/users/{user_id}",
+    "summary": "Assign a  user to a company"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/conditionals",
+    "summary": "Returns all Conditionals"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/conditionals",
+    "summary": "Save a new Conditional"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/conditionals/{conditional_id}",
+    "summary": "Get single Conditional by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/conditionals/{conditional_id}",
+    "summary": "Update a Conditional"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/conditionals/{conditional_id}",
+    "summary": "Delete a Conditional"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/connections",
+    "summary": "Returns all connections"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/connections",
+    "summary": "Save a new connections"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/connections/{connection_id}",
+    "summary": "Get single connection by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/connections/{connection_id}",
+    "summary": "Update a connection"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/connections/{connection_id}",
+    "summary": "Delete a connection"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/connections/{connection_id}/test-connection",
+    "summary": "Test database connection"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/contacts",
+    "summary": "Save a new contact "
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/countries",
+    "summary": "Returns all Countries"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/countries/{code}",
+    "summary": "Get single Country"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/entries",
+    "summary": "Returns all Entries"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/entries/logs/{uuid}",
+    "summary": "Get a list of logs"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/event_triggers",
+    "summary": "Returns all Event Triggers"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/event_triggers",
+    "summary": "Save a new Event trigger"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/event_triggers/{event_trigger_id}",
+    "summary": "Get single event_trigger by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/event_triggers/{event_triggers_id}",
+    "summary": "Update a event triggers"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/event_triggers/{event_triggers_id}",
+    "summary": "Delete a event triggers"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/fields",
+    "summary": "Returns all Fields"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/fields",
+    "summary": "Save a new Field"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/fields/{field_id}",
+    "summary": "Get single field by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/fields/{field_id}",
+    "summary": "Update a Field by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/fields/{field_id}",
+    "summary": "Delete a Field"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/files/{file_id}",
+    "summary": "Delete a File of media library"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/flows_template",
+    "summary": "Returns all Flows Template"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/flows_template",
+    "summary": "Save a new Flow Template"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/flows_template/{flow_template_id}",
+    "summary": "Get single Flow Template by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/flows_template/{flow_template_id}",
+    "summary": "Update a Flow Template by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/flows_template/{flow_template_id}",
+    "summary": "Delete a Flow Template"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/mappers-template",
+    "summary": "Returns all Mappers Template"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/mappers-template",
+    "summary": "Save a new Mapper Template"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/mappers-template/{mapper_template_id}",
+    "summary": "Get single Mapper Template by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/mappers-template/{mapper_template_id}",
+    "summary": "Update a Mapper Template by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/mappers-template/{mapper_template_id}",
+    "summary": "Delete a Mapper Template"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/notifications/mark-as-read/{notification_id}",
+    "summary": "Mark a Read Notification by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/notifications/mark-as-unread/{notification_id}",
+    "summary": "Mark a unread Notification by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/notifications/{notification_id}",
+    "summary": "Delete a Notification"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/notifications/tenant_id/user",
+    "summary": "Get Notifications by logged in user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/notifications-flow",
+    "summary": "Returns all NotificationsFlow"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/notifications-flow",
+    "summary": "Save a new Notification Flow"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/notifications-flow/{notification_flow_id}",
+    "summary": "Get single notification flow by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/notifications-flow/{notification_flow_id}",
+    "summary": "Update a Notification Flow by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/notificationsFlow/{notification_flow_id}",
+    "summary": "Delete a Notification Flow"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/oauth-clients",
+    "summary": "Returns all Oauth Clients"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/oauth-clients",
+    "summary": "Save a new Oauth Client"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/oauth-clients/{oauth_client_id}",
+    "summary": "Update a Oauth Client"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/oauth-clients/{oauth_client_id}",
+    "summary": "Delete a Oauth Client"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/oauth-client-user",
+    "summary": "Save a new Oauth Client User"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/oauth-client-user/{oauth_client_user_id}",
+    "summary": "Delete a Oauth Client User"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/shipedge/orders/status",
+    "summary": "Report Shipedge Orders by status"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/users/{user_id}/assign-permissions",
+    "summary": "Assign permissions to user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/preferences",
+    "summary": "Returns all Preferences"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/preferences",
+    "summary": "Save a new Preference"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/preferences/{preference_id}",
+    "summary": "Get single Preference by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/preferences/{preference_id}",
+    "summary": "Update a Preference"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/preferences/{preference_id}",
+    "summary": "Delete a Preference"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/processes",
+    "summary": "Returns all Processes"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/processes",
+    "summary": "Save a new Process"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/processes/{process_id}",
+    "summary": "Get single Process by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/processes/{process_id}",
+    "summary": "Update a Process"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/processes/{process_id}",
+    "summary": "Delete a Process"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/processes/{process_id}/execute",
+    "summary": "Run Worker Process"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/processes/find_process",
+    "summary": "Get single Process by configuration fields"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/processes/{process_id}/upload",
+    "summary": "Upload file CSV to flow Process"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/processes/{process_id}/read-xsd",
+    "summary": "Upload file xsd to customer mapping"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/processes/{process_id}/read-json",
+    "summary": "Upload file json to customer mapping"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/rates",
+    "summary": "Returns rates"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/shipedge/report/best-selling-skus",
+    "summary": "Report Shipedge best selling skus"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/roles/{role}",
+    "summary": "Get a Permissions"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/schedules",
+    "summary": "Returns all schedules"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/schedules",
+    "summary": "Save a new Schedule"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/schedules/{schedule}",
+    "summary": "Get single Schedule by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/schedules/{schedule}",
+    "summary": "Update a Schedule"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/schedules/{schedule}",
+    "summary": "Delete a Schedule"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/schedule-details",
+    "summary": "Returns all Schedule Details"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/services",
+    "summary": "Returns all services"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/services",
+    "summary": "Save a new Service"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/services/{service_id}",
+    "summary": "Get single Service by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/services/{service_id}",
+    "summary": "Update a Service"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/services/{service_id}",
+    "summary": "Delete a Service"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/signup",
+    "summary": "Signup in omnio"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/users",
+    "summary": "Returns all users"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/users",
+    "summary": "Save a new users"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/users/{user_id}",
+    "summary": "Get single user by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/users/{user_id}",
+    "summary": "Update a user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/users/{user_id}",
+    "summary": "Delete a user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/users/information",
+    "summary": "Get information current user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/users/{user_id}/information",
+    "summary": "Get information of user by id"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/users/{user_id}/assign-roles",
+    "summary": "Assign roles to user"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/warehouses/{warehouse_id}/assign-users",
+    "summary": "Assignment users to warehouses"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/warehouses/{warehouse_id}/companies/{company_id}",
+    "summary": "Assignment and Unassignment connection the warehouse"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/warehouses/{warehouse_id}/connections",
+    "summary": "Save a new connection and assigning to the warehouse"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/warehouses/{warehouse_id}/connections/{connection_id}",
+    "summary": "Assign connection to the warehouse"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/warehouses",
+    "summary": "Returns all warehouses"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/warehouses",
+    "summary": "Save a new warehouses"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "GET",
+    "path": "/warehouses/{warehouse_id}",
+    "summary": "Get single warehouse by ID"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "PUT",
+    "path": "/warehouses/{warehouse_id}",
+    "summary": "Update a warehouse"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "DELETE",
+    "path": "/warehouses/{warehouse_id}",
+    "summary": "Delete a warehouse"
+  },
+  {
+    "spec": "api-docs-omnio",
+    "method": "POST",
+    "path": "/warehouses/store-bulk-csv",
+    "summary": "Read file CSV to store bulk"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/accounts",
+    "summary": "Returns all Accounts Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/accounts",
+    "summary": "Save a new Account Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/accounts/{account_id}",
+    "summary": "clone a Account Shipedge to warehouses"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/accounts/create-company",
+    "summary": "Create company and user with infomraction account warehouse"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/address_books",
+    "summary": "Returns all AddressBooks Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/address_books",
+    "summary": "Save  AddressBooks in AddressBulk Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/apiorders",
+    "summary": "Returns all ApiOrders Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/apiorders",
+    "summary": "Save a new ApiOrder Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/apiorders/{apiorder}",
+    "summary": "Returns a single ApiOrder Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/apiorders/{apiorder}",
+    "summary": "Update a Api Order"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/apiorders/{apiorder}",
+    "summary": "Delete apiOrder"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PATCH",
+    "path": "/shipedge/warehouses/{warehouse}/accounts/{account}/bins/bin-lock",
+    "summary": "change bincategory_id =6 blocked"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/config-files",
+    "summary": "Returns all Config Files Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/config-files",
+    "summary": "Save a new ConfigFile Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/config-files/{config_file}",
+    "summary": "Update a ConfigFile Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/config-files/{config_file}",
+    "summary": "Delete a Config File"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/accounts/{account}/cronjobhistory",
+    "summary": "Returns all cron job history Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/distributions-center",
+    "summary": "Returns all Distribution Center Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "processes/{process_id}/distribution/execute",
+    "summary": "Send orders, sync inventory, update tracking"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/families",
+    "summary": "Returns all families Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/families",
+    "summary": "Save a new Family in Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/families/{Family_id}",
+    "summary": "Get single Family by ID"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/families/{family_id}",
+    "summary": "Update a Family"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/families/{family_id}",
+    "summary": "Delete a Family"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/families-sku",
+    "summary": "Save a new Family Sku in Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/families-sku/{family_sku_id}",
+    "summary": "Delete a Family Sku"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/filenames",
+    "summary": "Returns all filenames Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/filenames",
+    "summary": "Save a new Filename Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/header-names",
+    "summary": "Returns all heades names Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/header-names",
+    "summary": "Save a new Header Name Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/header-names/{header-name}",
+    "summary": "Update a Header Name"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/header-names/{header-name}",
+    "summary": "Delete a Header Name"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/serials",
+    "summary": "Returns serials list"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/locations",
+    "summary": "Returns all registered shipedge locations"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/metadata",
+    "summary": "Returns metadata info Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/metadata",
+    "summary": "Save a new metadata  for orders, orders items, account,products"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/metadata/{metadata_id}",
+    "summary": "Update a Metadata"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/metadata/{metadata}",
+    "summary": "delete a metadata"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/metadata/store-bulk",
+    "summary": "Store bulk a metadata"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/method_shipping",
+    "summary": "Returns all method shipping Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/orders",
+    "summary": "Returns all orders Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/orders/{order_id}",
+    "summary": "Get single Order by ID"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/partial-invoice/transfer-billing",
+    "summary": "copy data table partial_invoice from hubwarehouse  to warehouse main"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/products",
+    "summary": "returns products"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/products",
+    "summary": "Save a new Product Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/skus/{sku}/availability",
+    "summary": "Availability details about a  Skus-quantities in stock "
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/products/store-bulk",
+    "summary": "Save  products in bulk"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/products-hurt",
+    "summary": "returns hurts"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/products/history/{productid}",
+    "summary": "returns history by product"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/replenishments",
+    "summary": "Returns all replenishments Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/replenishments",
+    "summary": "Save a new Replenishments Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/replenishments/{replenishment}",
+    "summary": "Destroy a Replenishment"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/replenishments/store-bulk",
+    "summary": "Save bulk replenishment"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/replenishments-item",
+    "summary": "Save a new Replenishment Item Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/replenishments-item/{replenishmentitem}",
+    "summary": "Destroy a Replenishment Item"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/repositories",
+    "summary": "Returns all reposotories Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/return-order",
+    "summary": "Returns all returned order Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/return-order",
+    "summary": "Save a new Return Order"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/return-order/{return_order_id}",
+    "summary": "Get single Return Order by ID"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/return-order/{return_order_id}",
+    "summary": "Update a Return Order"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/return-order/{return_order_id}",
+    "summary": "Delete a return order"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/return-order-detail",
+    "summary": "Save a new Return Order Detail"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/return-order/{return_order_detail_id}",
+    "summary": "Update a Return Order Detail"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/return-order-detail/{return_order_detail_id}",
+    "summary": "Delete a return order detail"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/return-order-detail/store-bulk",
+    "summary": "Save a news Return Order Detail"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/shipping-carriers",
+    "summary": "returns shipping carriers"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/store-carriers-bulk",
+    "summary": "Create carrier and methods shipping"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/fulfillment",
+    "summary": "Create a fulfillment for the specified order and line items."
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/status",
+    "summary": "Returns all status Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/suppliers",
+    "summary": "Returns all supplires Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/type-packages",
+    "summary": "Returns type packages list"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/users",
+    "summary": "Returns all users Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/users",
+    "summary": "Save a new User Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "shipedge/warehouses/{warehouse}/webhooks",
+    "summary": "Get to Webhooks Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/{warehouse_id}/webhooks/{webhook_id}",
+    "summary": "Get single webhook by ID"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/{warehouse_id}/webhooks/{webhook_id}",
+    "summary": "Delete a Webhook"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/{warehouse_id}/webhooks",
+    "summary": "Save a new Webhook"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/{warehouse_id}/webhook/{webhook_id}",
+    "summary": "Update a Webhook"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "shipedge/warehouses/{warehouse}/credentials",
+    "summary": "Check if the username and password of shipedgeDB are correct"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "shipedge/warehouses/credentials",
+    "summary": "Check if credentials are correct in warehouse shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/wsenterprises",
+    "summary": "Returns all Enterprises Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/wsenterprises",
+    "summary": "Store a Enterprise Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/parameters",
+    "summary": "Update or Create a Parameter"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/ws_stores",
+    "summary": "Returns all WsStores Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/ws_stores",
+    "summary": "Save a new WsStore in Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "POST",
+    "path": "/shipedge/warehouses/{warehouse}/ws_stores/sync-process",
+    "summary": "Sync process WsStore in Shipedge"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "GET",
+    "path": "/shipedge/warehouses/{warehouse}/ws_stores/{wsstore_id}",
+    "summary": "Get single WsStore by ID"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "PUT",
+    "path": "/shipedge/warehouses/{warehouse}/ws_stores/{wsstore_id}",
+    "summary": "Update a WsStore"
+  },
+  {
+    "spec": "api-docs-shipedge",
+    "method": "DELETE",
+    "path": "/shipedge/warehouses/{warehouse}/ws_stores/{wsstore_id}",
+    "summary": "Destroy a WsStore"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/bigcommerce/install",
+    "summary": "Install application bigCommerce in shop with one click method"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/bigcommerce/connector",
+    "summary": "Install application bigCommerce in shop with Connector method"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/commercehub/install",
+    "summary": "Install application commerceHub in shop"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/diamond-graphics/install",
+    "summary": "Install application diamond graphics in shop"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/ebay/install",
+    "summary": "Install application ebay in shop"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/email-account/install",
+    "summary": "Install email account"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "processes/{process_id}/generate-file",
+    "summary": "Resent or Remake files for SFTP services"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/ebay/callback/gateway",
+    "summary": "Save access token to configuration process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/gateway/receiving",
+    "summary": "Install process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shopify/callback",
+    "summary": "Save access token to configurationo process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/mercado_libre/callback",
+    "summary": "Save access token to configuration process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/jumpSeller/callback",
+    "summary": "Save access token to configuration process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/ebay/callback",
+    "summary": "Save access token to configuration process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/bigcommerce/callback",
+    "summary": "Save access token to configuration process"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/processes/{process_id}/integration/execute",
+    "summary": "Import Products and Orders"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/jumpseller/install",
+    "summary": "Install application jumpseller in shop"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/processes/{process_id}/mercado_libre/install",
+    "summary": "Install application Mercado Libre in url_base"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "GET",
+    "path": "/processes/{process_id}/mercado_libre/products/import",
+    "summary": "Import Products from Mercado libre"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/mintsoft/install",
+    "summary": "Install application mintsoft"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/proxipod/install",
+    "summary": "Install application proxipod in shop"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shipedge/access_shipedge/{access_shipedge_id}/orders",
+    "summary": "Create Order in Api Shipedge"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shipedge/access_shipedge/{access_shipedge_id}/send-file",
+    "summary": "Send file  to   Api Shipedge"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shipedge/access_shipedge/{access_shipedge_id}/repository-show/{id}",
+    "summary": "get repository shipedge"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "PUT",
+    "path": "/shipedge/access_shipedge/{access_shipedge_id}/orders/{id}",
+    "summary": "update  Order in Api Shipedge"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shipedge/access_shipedge/{access_shipedge_id}/job-execute",
+    "summary": "execute job  in  Shipedge"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shipedge/v4/replenishments/store-bulk",
+    "summary": "store replenishments to shpedge"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/install",
+    "summary": "Install application shopify in shop"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "GET",
+    "path": "/processes/{process_id}/shopify/locations",
+    "summary": "Get to Locations of Shopify"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "GET",
+    "path": "/processes/{process_id}/shopify/fulfillment_services",
+    "summary": "Get to fulfillment_services of Shopify"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/processes/{process_id}/shopify/fulfillment_services",
+    "summary": "Post Fulfillment Services"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "DELETE",
+    "path": "/processes/{process_id}/shopify/fulfillment_services/{fulfillment_id}",
+    "summary": "Delete a Fulfillment"
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/customers/redact",
+    "summary": "Requests deletion of customer data."
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/shop/redact",
+    "summary": "Requests deletion of shop data."
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/customers/data_request",
+    "summary": "Requests to view stored customer data."
+  },
+  {
+    "spec": "api-docs-integration",
+    "method": "POST",
+    "path": "/companies/{company_id}/spscommerce/install",
+    "summary": "Install application Spscommerce in shop"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/webhooks/mercado_libre",
+    "summary": "Webhook Mercado Libre"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/app/uninstalled",
+    "summary": "Webhook shopify App uninstalled"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/shop/update",
+    "summary": "Webhook shopify shop update"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/fulfillments/update",
+    "summary": "Webhook shopify fulfillments Update"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/order_transactions/create",
+    "summary": "Webhook shopify order transactions create"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/orders/cancelled",
+    "summary": "Webhook shopify orders cancelled"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/orders/create",
+    "summary": "Webhook shopify orders create"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/orders/fulfilled",
+    "summary": "Webhook shopify orders fulfilled"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/processes/{process_id}/shopify/webhook/orders/paid",
+    "summary": "Webhook shopify orders paid"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/orders/updated",
+    "summary": "Webhook shopify orders updated"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/orders/partially_fulfilled",
+    "summary": "Webhook shopify orders partially fulfilled"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/processess/{process_id}/shopify/webhook/products/create",
+    "summary": "Webhook shopify products create"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/products/delete",
+    "summary": "Webhook shopify products delete"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/processes/{process_id}/shopify/webhook/products/update",
+    "summary": "Webhook shopify products update"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/refunds/create",
+    "summary": "Webhook shopify refunds create"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/shopify/webhook/locations/create",
+    "summary": "Webhook shopify locations create"
+  },
+  {
+    "spec": "api-docs-webhook",
+    "method": "POST",
+    "path": "/companies/{company_id}/processes/{process_id}/shopify/create_webhook",
+    "summary": "Create shopify webhook"
+  }
+]

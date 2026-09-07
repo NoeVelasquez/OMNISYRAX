@@ -1,4 +1,6 @@
+import os
 import csv
+import random
 from pathlib import Path
 import typer
 import logging
@@ -8,6 +10,7 @@ from datetime import datetime
 from typing import Optional, List, Any, Dict
 from rich.console import Console
 from rich.logging import RichHandler
+from rich.table import Table
 
 # Suprimir advertencias molestas
 warnings.filterwarnings("ignore", category=UserWarning, module="urllib3")
@@ -87,8 +90,18 @@ console = Console()
 app = typer.Typer(help="🌌 OMNISYRAX: Generación de Datos")
 
 def get_timestamp_filename(prefix: str, ext: str = "csv") -> str:
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    return f"{prefix}_{timestamp}.{ext}"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_name = f"{prefix}_{timestamp}.{ext}"
+    target_path = os.path.join(config.output_dir, base_name)
+    if not os.path.exists(target_path):
+        return base_name
+    
+    counter = 1
+    while True:
+        candidate = f"{prefix}_{timestamp}_{counter}.{ext}"
+        if not os.path.exists(os.path.join(config.output_dir, candidate)):
+            return candidate
+        counter += 1
 
 def get_valid_profiles() -> List[str]:
     """Retorna una lista de perfiles que no sean marcadores de posición (placeholders)."""
@@ -336,12 +349,56 @@ def inspect_resource_flow():
             "📝 Estado de Purchase Order (PO)",
             "🔄 Estado de Transferencia (Stock Transfer)",
             "📦 Estado de Producto (Catalog Product)",
-            "📈 Estado de Inventario (Stock Level)"
+            "📈 Estado de Inventario (Stock Level)",
+            "🌐 Consumir cualquier Endpoint GET del Catálogo (OpenAPI 609 Catalog)"
         ]
     ).ask()
     if not resource_type: return
 
     exporter = APIExporter(url, token)
+    cid = profile_data.get("company_id", "1")
+
+    if "Catálogo" in resource_type:
+        import json, os
+        catalog_path = "data/condor_api_catalog.json"
+        if not os.path.exists(catalog_path):
+            console.print("[bold red]❌ No se encontró el archivo de catálogo data/condor_api_catalog.json[/bold red]")
+            return
+            
+        with open(catalog_path) as f:
+            catalog = json.load(f)
+            
+        get_eps = [f"{ep['method']} {ep['path']} - ({ep['summary']})" for ep in catalog if ep["method"] == "GET"]
+        
+        selected_ep = questionary.select(
+            "Selecciona el Endpoint GET que deseas consumir:",
+            choices=get_eps[:40]
+        ).ask()
+        if not selected_ep: return
+        
+        raw_path = selected_ep.split(" ")[1]
+        
+        # Si el path requiere un ID específico y contiene llaves {id}, solicitarlo
+        if "{" in raw_path and "tenant_id" not in raw_path and "company_id" not in raw_path:
+            param_name = raw_path.split("{")[1].split("}")[0]
+            val = questionary.text(f"Ingresa el valor para {{{param_name}}}:").ask()
+            if val:
+                raw_path = raw_path.replace(f"{{{param_name}}}", val.strip())
+
+        console.print(f"[yellow]⚙️ Consumiendo GET {raw_path} en {p_choice}...[/yellow]")
+        res = exporter.get_any_endpoint(raw_path, company_id=cid)
+        
+        if res.get("success"):
+            console.print(f"[bold green]✅ HTTP {res.get('status')} - Respuesta recibida con éxito:[/bold green]")
+            import json
+            pretty_json = json.dumps(res.get("data"), indent=2, ensure_ascii=False)
+            if len(pretty_json) > 1500:
+                console.print_json(pretty_json[:1500] + "\n... (respuesta truncada por longitud)")
+            else:
+                console.print_json(pretty_json)
+        else:
+            console.print(f"[bold red]❌ Error HTTP {res.get('status')}: {res.get('error')}[/bold red]")
+        return
     
     from rich.panel import Panel
     from rich.table import Table
@@ -578,6 +635,7 @@ def inspect_resource_flow():
             console.print(f"[dim]Mostrando primeros {len(display_list)} SKUs de inventario...[/dim]")
             
         inv_table = Table(title="📈 Niveles de Stock de Inventario por Ubicación", show_header=True, header_style="bold yellow", expand=True)
+        inv_table.add_column("SKU ID", style="magenta")
         inv_table.add_column("SKU Code", style="cyan")
         inv_table.add_column("Ubicación", style="yellow")
         inv_table.add_column("Disponible", justify="right", style="green")
@@ -587,15 +645,17 @@ def inspect_resource_flow():
         inv_table.add_column("Dañado (Hurt)", justify="right", style="red")
         
         for item in display_list:
+            sku_id = str(item.get("sku_id") or "-")
             sku_code = item.get("sku", "N/A")
             quantities = item.get("quantities") or []
             if not quantities:
-                inv_table.add_row(sku_code, "Sin ubicación asignada", "0", "0", "0", "0", "0")
+                inv_table.add_row(sku_id, sku_code, "Sin ubicación asignada", "0", "0", "0", "0", "0")
             else:
                 for q in quantities:
                     iloc_info = q.get("iloc") or {}
                     iloc_name = iloc_info.get("name") or f"ID: {q.get('iloc_id')}"
                     inv_table.add_row(
+                        sku_id,
                         sku_code,
                         iloc_name,
                         str(q.get("qty_available", 0)),
@@ -659,7 +719,7 @@ def prompt_brand(category: str = "all") -> str:
     if not brand_choice or "Aleatorio" in brand_choice:
         return "all"
         
-    if "lista destacada" in brand_choice:
+    if "lista" in brand_choice or "marcas destacadas" in brand_choice:
         from src.utils.data_pool import CATEGORY_BRAND_SUGGESTIONS
         default_list = ["JBL", "Sony", "Apple", "Samsung", "Bose", "Nike", "Adidas", "Logitech", "Philips", "Puma"]
         suggestions = CATEGORY_BRAND_SUGGESTIONS.get(category, default_list)
@@ -793,7 +853,7 @@ def run_local_generator(action: str):
         selected_lang = prompt_language()
         search_target = selected_brand if selected_brand != "all" else selected_cat
         console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        shipedge(count=int(qty), lang=selected_lang, category=selected_cat)
+        shipedge(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand)
     elif action == "📠 Generar EDI (Standard XML)":
         qty = questionary.text("¿Cuántos archivos EDI XML?", "5").ask()
         if not qty: return
@@ -906,8 +966,17 @@ def api_orders_upload_flow():
             console.print("[bold red]⚠️ No se pudieron obtener procesos automáticamente.[/bold red]")
             pid = questionary.text("Ingresar Process ID manualmente:").ask()
             if not pid: return
+
+        save_opt = questionary.confirm("¿Deseas guardar estos datos en credentials.yaml para uso futuro?", default=True).ask()
+        if save_opt:
+            default_pname = f"Tenant_CID_{cid}"
+            pname = questionary.text("Nombre para el perfil:", default=default_pname).ask()
+            if pname and pname.strip():
+                pname = pname.strip()
+                if config.save_profile(pname, token, cid, pid, api_base_url=url):
+                    console.print(f"[bold green]💾 Perfil '{pname}' guardado exitosamente en credentials.yaml[/bold green]\n")
             
-        orders(count=count, format="api", token=token, company_id=cid, process_id=pid)
+        orders(count=count, format="api", token=token, company_id=cid, process_id=pid, api_url=url)
     elif mode == "Importar desde archivo .txt (Estilo Octane)":
         path = questionary.text("Ruta del archivo .txt?", default="config/tenants_import.txt").ask()
         if not path: return
@@ -1449,7 +1518,7 @@ def api_po_transfer_upload_flow():
     console.print(table)
 
 def api_fulfill_shipment_flow():
-    console.print("\n[bold cyan]🚢 DESPACHAR ENVÍO (FULFILL SHIPMENT) VÍA API[/bold cyan]")
+    console.print("\n[bold cyan]🚢 DESPACHAR ENVÍOS (FULFILL SHIPMENTS) VÍA API[/bold cyan]")
     
     valid_choices = get_valid_profiles()
     if not valid_choices:
@@ -1457,39 +1526,83 @@ def api_fulfill_shipment_flow():
         return
         
     p_choice = questionary.select(
-        "Selecciona el perfil/tenant del envío:",
+        "Selecciona el perfil/tenant para despachar envíos:",
         choices=valid_choices
     ).ask()
     if not p_choice: return
     
-    shipment_id_str = questionary.text(
-        "Ingresa el ID numérico del envío a despachar:",
-        validate=lambda text: True if text.strip().isdigit() else "El ID del envío debe ser un número entero"
-    ).ask()
-    if not shipment_id_str: return
-    shipment_id = int(shipment_id_str.strip())
-    
-    tracking_number = questionary.text(
-        "Ingresa el número de tracking (vacío para generar automático):"
-    ).ask()
-    
-    if not tracking_number or not tracking_number.strip():
-        tracking_number = f"TRK-{datetime.now().strftime('%Y%m%d%H%M')}-{random.randint(1000, 9999)}"
-    else:
-        tracking_number = tracking_number.strip()
-        
     profile_data = config.get_profile(p_choice)
     url = profile_data.get("api_base_url") or config.get("api_base_url")
     token = profile_data.get("token")
-    
-    console.print(f"[yellow]⚙️ Despachando envío #{shipment_id} con tracking '{tracking_number}' en {p_choice}...[/yellow]")
     exporter = APIExporter(url, token)
-    res = exporter.fulfill_shipment(shipment_id, tracking_number)
     
-    if res.get("success"):
-        console.print(f"[bold green]✅ Envío #{shipment_id} despachado exitosamente.[/bold green]")
+    mode = questionary.select(
+        "¿Cómo deseas despachar los envíos?",
+        choices=[
+            "⚡ Despachar TODOS los envíos pendientes del tenant (Autodespacho Masivo)",
+            "✍️ Ingresar IDs de envío manualmente (separados por comas)",
+            "🎯 Despachar un solo envío por ID"
+        ]
+    ).ask()
+    if not mode: return
+
+    shipments_to_fulfill = []
+
+    if "TODOS" in mode:
+        console.print(f"[yellow]🔍 Buscando envíos pendientes de órdenes en {p_choice}...[/yellow]")
+        open_shipments = exporter.get_all_open_shipments()
+        if not open_shipments:
+            console.print("[bold yellow]⚠️ No se encontraron envíos pendientes en este tenant.[/bold yellow]")
+            return
+            
+        console.print(f"[bold white]Se encontraron {len(open_shipments)} envíos pendientes para despachar.[/bold white]")
+        confirm = questionary.confirm(f"¿Deseas despachar los {len(open_shipments)} envíos ahora?", default=True).ask()
+        if not confirm: return
+        
+        for s in open_shipments:
+            s_id = s.get("id")
+            if s_id:
+                shipments_to_fulfill.append(s_id)
+
+    elif "comas" in mode:
+        ids_str = questionary.text(
+            "Ingresa los IDs numéricos de envío a despachar (ej. 101, 102, 103):",
+            validate=lambda text: True if text.strip() else "Debes ingresar al menos un ID"
+        ).ask()
+        if not ids_str: return
+        for raw_id in ids_str.split(","):
+            raw_id = raw_id.strip()
+            if raw_id.isdigit():
+                shipments_to_fulfill.append(int(raw_id))
+
     else:
-        console.print(f"[bold red]❌ Error al despachar el envío: {res.get('error')}[/bold red]")
+        shipment_id_str = questionary.text(
+            "Ingresa el ID numérico del envío a despachar:",
+            validate=lambda text: True if text.strip().isdigit() else "El ID del envío debe ser un número entero"
+        ).ask()
+        if not shipment_id_str: return
+        shipments_to_fulfill.append(int(shipment_id_str.strip()))
+
+    if not shipments_to_fulfill:
+        console.print("[bold red]❌ No hay IDs de envío válidos para procesar.[/bold red]")
+        return
+
+    console.print(f"\n[bold yellow]⚙️ Procesando despacho de {len(shipments_to_fulfill)} envíos en {p_choice}...[/bold yellow]")
+    
+    success_count = 0
+    fail_count = 0
+    
+    for sid in shipments_to_fulfill:
+        tracking_number = f"TRK-{datetime.now().strftime('%Y%m%d%H%M')}-{random.randint(1000, 9999)}"
+        res = exporter.fulfill_shipment(sid, tracking_number)
+        if res.get("success"):
+            success_count += 1
+            console.print(f"  ✅ Envío #{sid} despachado (Tracking: {tracking_number})")
+        else:
+            fail_count += 1
+            console.print(f"  ❌ Envío #{sid} falló: {res.get('error')}")
+
+    console.print(f"\n[bold green]✅ Resumen de Despacho: {success_count} exitosos, {fail_count} fallidos.[/bold green]\n")
 
 def api_cancel_order_flow():
     console.print("\n[bold cyan]❌ CANCELAR/ELIMINAR ORDEN VÍA API[/bold cyan]")
@@ -1616,27 +1729,115 @@ def api_clear_stock_flow():
     if fail_count > 0:
         console.print(f"[bold red]⚠️ Falló la purga de {fail_count} SKUs.[/bold red]")
 
+def api_metadata_upload_flow():
+    console.print("\n[bold cyan]🏷️ CARGA DE METADATOS DINÁMICOS VÍA API[/bold cyan]")
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil para cargar metadatos:", choices=valid_choices).ask()
+    if not p_choice: return
+    
+    key = questionary.text("Ingresa la clave del atributo/metadata (ej. color, weight_class, fragile):").ask()
+    val = questionary.text("Ingresa el valor del atributo (ej. Red, Heavy, True):").ask()
+    if not key or not val: return
+
+    prof = config.credentials.get(p_choice, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    exporter = APIExporter(url, prof.get("token"))
+    res = exporter.upload_tenant_metadata(prof.get("company_id"), key, val)
+    if res.get("success"):
+        console.print(f"[bold green]✅ Metadata '{key}: {val}' cargada con éxito en {p_choice}.[/bold green]")
+    else:
+        console.print(f"[bold red]❌ Error al cargar metadata: {res.get('error')}[/bold red]")
+
+def api_sku_alt_upload_flow():
+    console.print("\n[bold cyan]🔀 REGISTRO DE SKU ALTERNATIVO VÍA API[/bold cyan]")
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil para registrar SKU alternativo:", choices=valid_choices).ask()
+    if not p_choice: return
+
+    orig_sku = questionary.text("Ingresa el SKU original (ej. SKU-BASE-001):").ask()
+    alt_sku = questionary.text("Ingresa el SKU alternativo/equivalente (ej. ALT-SKU-001):").ask()
+    if not orig_sku or not alt_sku: return
+
+    prof = config.credentials.get(p_choice, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    exporter = APIExporter(url, prof.get("token"))
+    res = exporter.upload_sku_alternative(prof.get("company_id"), orig_sku, alt_sku)
+    if res.get("success"):
+        console.print(f"[bold green]✅ SKU alternativo '{alt_sku}' mapeado a '{orig_sku}' con éxito en {p_choice}.[/bold green]")
+    else:
+        console.print(f"[bold red]❌ Error al registrar SKU alternativo: {res.get('error')}[/bold red]")
+
 def api_generation_menu():
+    import json, os
+    catalog_path = "data/condor_api_catalog.json"
+    catalog_get_choices = []
+    if os.path.exists(catalog_path):
+        with open(catalog_path) as f:
+            cat = json.load(f)
+            for ep in cat:
+                if ep.get("method") == "GET":
+                    path = ep["path"]
+                    summary = ep.get("summary", "")
+                    
+                    # Formato visual elegante con emojis temáticos según la entidad
+                    if "order" in path: icon = "🛍️"
+                    elif "address" in path: icon = "🏠"
+                    elif "alert" in path: icon = "🔔"
+                    elif "box" in path: icon = "📦"
+                    elif "brand" in path: icon = "🏷️"
+                    elif "carrier" in path: icon = "🚚"
+                    elif "categor" in path: icon = "📂"
+                    elif "contact" in path: icon = "📇"
+                    elif "currenc" in path: icon = "💱"
+                    elif "filter" in path: icon = "🔍"
+                    elif "flow" in path: icon = "🔄"
+                    elif "iloc" in path or "inventory" in path or "stock" in path: icon = "🏭"
+                    elif "product" or "sku" in path: icon = "🏷️"
+                    else: icon = "📡"
+                    
+                    catalog_get_choices.append(f"🔍 GET {path} — ({summary})")
+
+    webhook_choices = [
+        "⚡ WEBHOOK: orders/create — (Shopify Orden Creada)",
+        "⚡ WEBHOOK: orders/paid — (Shopify Orden Pagada)",
+        "⚡ WEBHOOK: orders/canceled — (Shopify Orden Cancelada)",
+        "⚡ WEBHOOK: shipedge/orders/shipped — (WMS Shipedge Orden Enviada)",
+        "⚡ WEBHOOK: shipedge/inventory/changes — (WMS Shipedge Ajuste Inventario)",
+        "⚡ WEBHOOK: refunds/create — (Shopify Reembolso Creado)"
+    ]
+
+    base_choices = [
+        "⚡ Prueba de Estrés y Rendimiento (Fase 1 Stress Test)",
+        "🛍️ Cargar Órdenes vía API",
+        "📦 Cargar Productos vía API",
+        "📈 Ajustar Stock de Inventario vía API",
+        "📝 Cargar POs o Transferencias vía API",
+        "🚢 Despachar Envío (Fulfill Shipment) vía API",
+        "🏷️ Cargar Metadatos Dinámicos vía API",
+        "🔀 Cargar SKUs Alternativos vía API"
+    ]
+
+    all_menu_choices = base_choices + webhook_choices + catalog_get_choices + ["🗑️ Vaciar Stock de Inventario vía API", "↩️ Volver"]
+
     while True:
         console.print("\n[bold cyan]🛍️ GENERACIÓN Y CARGA VÍA API[/bold cyan]")
         choice = questionary.select(
             "Selecciona la acción por API:",
-            choices=[
-                "🛍️ Cargar Órdenes vía API",
-                "📦 Cargar Productos vía API",
-                "📈 Ajustar Stock de Inventario vía API",
-                "📝 Cargar POs o Transferencias vía API",
-                "🚢 Despachar Envío (Fulfill Shipment) vía API",
-                "🗑️ Vaciar Stock de Inventario vía API",
-                "🔍 Consultar Estado de Recursos (Órdenes, POs, SKUs, Stock)",
-                "↩️ Volver"
-            ]
+            choices=all_menu_choices
         ).ask()
         
         if not choice or choice == "↩️ Volver":
             break
             
-        if choice == "🛍️ Cargar Órdenes vía API":
+        if choice == "⚡ Prueba de Estrés y Rendimiento (Fase 1 Stress Test)":
+            api_stress_test_flow()
+        elif choice == "🛍️ Cargar Órdenes vía API":
             api_orders_upload_flow()
         elif choice == "📦 Cargar Productos vía API":
             api_products_upload_flow()
@@ -1646,10 +1847,213 @@ def api_generation_menu():
             api_po_transfer_upload_flow()
         elif choice == "🚢 Despachar Envío (Fulfill Shipment) vía API":
             api_fulfill_shipment_flow()
+        elif choice == "🏷️ Cargar Metadatos Dinámicos vía API":
+            api_metadata_upload_flow()
+        elif choice == "🔀 Cargar SKUs Alternativos vía API":
+            api_sku_alt_upload_flow()
         elif choice == "🗑️ Vaciar Stock de Inventario vía API":
             api_clear_stock_flow()
-        elif choice == "🔍 Consultar Estado de Recursos (Órdenes, POs, SKUs, Stock)":
-            inspect_resource_flow()
+        elif choice.startswith("⚡ WEBHOOK:"):
+            event_clean = choice.replace("⚡ WEBHOOK: ", "").split(" ")[0]
+            _execute_direct_webhook(event_clean)
+        elif choice.startswith("🔍 GET "):
+            raw_path = choice.replace("🔍 GET ", "").split(" ")[0]
+            _execute_direct_get(raw_path)
+
+def _execute_direct_webhook(event_type: str):
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil/tenant destino:", choices=valid_choices).ask()
+    if not p_choice: return
+
+    order_num = questionary.text("Ingresa el número de orden objetivo (ej. ORD-20260827-001):", "ORD-20260827-001").ask()
+    prof = config.credentials.get(p_choice, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    exporter = APIExporter(url, prof.get("token"))
+
+    console.print(f"[yellow]⚙️ Enviando simulación de webhook '{event_type}'...[/yellow]")
+    res = exporter.simulate_webhook_event(prof.get("company_id"), event_type=event_type, order_num=order_num, process_id=prof.get("process_id"))
+    if res.get("success"):
+        console.print(f"[bold green]✅ Webhook '{event_type}' procesado por la API con HTTP {res.get('status')}.[/bold green]")
+    else:
+        console.print(f"[bold red]❌ Error o rechazo de Webhook ({res.get('status')}): {res.get('error')}[/bold red]")
+
+def _execute_direct_get(raw_path: str):
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil/tenant a consultar:", choices=valid_choices).ask()
+    if not p_choice: return
+
+    profile_data = config.get_profile(p_choice)
+    url = profile_data.get("api_base_url") or config.get("api_base_url")
+    token = profile_data.get("token")
+    cid = profile_data.get("company_id", "1")
+
+    import re
+    # Encontrar todas las variables entre llaves {variable} en la URL
+    params_to_replace = re.findall(r"\{([^}]+)\}", raw_path)
+    for p_name in params_to_replace:
+        if p_name not in ["tenant_id", "company_id", "tenant"]:
+            val = questionary.text(f"🔑 Ingresa el ID/Valor para {{{p_name}}}:").ask()
+            if val and val.strip():
+                raw_path = raw_path.replace(f"{{{p_name}}}", val.strip())
+
+    console.print(f"[yellow]⚙️ Consumiendo GET {raw_path} en {p_choice}...[/yellow]")
+    exporter = APIExporter(url, token)
+    res = exporter.get_any_endpoint(raw_path, company_id=cid)
+    
+    if res.get("success"):
+        console.print(f"\n[bold green]✅ HTTP {res.get('status')} - Respuesta recibida con éxito de GET {raw_path}:[/bold green]")
+        import json
+        from rich.panel import Panel
+        from rich.syntax import Syntax
+        
+        pretty_json = json.dumps(res.get("data"), indent=2, ensure_ascii=False)
+        if len(pretty_json) > 2500:
+            content_show = pretty_json[:2500] + "\n\n... ⚠️ (Respuesta truncada a 2500 caracteres por longitud)"
+        else:
+            content_show = pretty_json
+            
+        syntax = Syntax(content_show, "json", theme="ansi_dark", line_numbers=False)
+        console.print(Panel(syntax, title=f"📦 JSON Response: {raw_path}", border_style="cyan", expand=False))
+    else:
+        console.print(f"[bold red]❌ Error HTTP {res.get('status')}: {res.get('error')}[/bold red]")
+        
+    questionary.press_any_key_to_continue("Presiona cualquier tecla para continuar...").ask()
+
+def api_catalog_explorer_flow():
+    console.print("\n[bold cyan]🌐 EXPLORADOR Y CONSUMIDOR DE ENDPOINTS (OPENAPI 609 CATALOG)[/bold cyan]")
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil/tenant destino:", choices=valid_choices).ask()
+    if not p_choice: return
+
+    profile_data = config.get_profile(p_choice)
+    url = profile_data.get("api_base_url") or config.get("api_base_url")
+    token = profile_data.get("token")
+    cid = profile_data.get("company_id", "1")
+
+    import json, os
+    catalog_path = "data/condor_api_catalog.json"
+    if not os.path.exists(catalog_path):
+        console.print("[bold red]❌ No se encontró el catálogo en data/condor_api_catalog.json[/bold red]")
+        return
+        
+    with open(catalog_path) as f:
+        catalog = json.load(f)
+        
+    get_eps = [f"{ep['method']} {ep['path']} - ({ep['summary']})" for ep in catalog if ep["method"] == "GET"]
+    
+    selected_ep = questionary.select(
+        "Selecciona la API GET que deseas consumir:",
+        choices=get_eps[:50]
+    ).ask()
+    if not selected_ep: return
+    
+    raw_path = selected_ep.split(" ")[1]
+    
+    if "{" in raw_path and "tenant_id" not in raw_path and "company_id" not in raw_path:
+        param_name = raw_path.split("{")[1].split("}")[0]
+        val = questionary.text(f"Ingresa el valor para {{{param_name}}}:").ask()
+        if val:
+            raw_path = raw_path.replace(f"{{{param_name}}}", val.strip())
+
+    console.print(f"[yellow]⚙️ Consumiendo GET {raw_path} en {p_choice}...[/yellow]")
+    exporter = APIExporter(url, token)
+    res = exporter.get_any_endpoint(raw_path, company_id=cid)
+    
+    if res.get("success"):
+        console.print(f"[bold green]✅ HTTP {res.get('status')} - Respuesta recibida con éxito:[/bold green]")
+        pretty_json = json.dumps(res.get("data"), indent=2, ensure_ascii=False)
+        if len(pretty_json) > 1500:
+            console.print_json(pretty_json[:1500] + "\n... (respuesta truncada por longitud)")
+        else:
+            console.print_json(pretty_json)
+    else:
+        console.print(f"[bold red]❌ Error HTTP {res.get('status')}: {res.get('error')}[/bold red]")
+
+def api_webhook_simulator_flow():
+    console.print("\n[bold cyan]🔄 FASE 2: SIMULADOR DE WEBHOOKS EXTERNOS[/bold cyan]")
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil/tenant destino:", choices=valid_choices).ask()
+    if not p_choice: return
+
+    event_type = questionary.select(
+        "Selecciona el tipo de evento Webhook a simular:",
+        choices=[
+            "orders/create (Shopify Orden Creada)",
+            "orders/paid (Shopify Orden Pagada)",
+            "orders/canceled (Shopify Orden Cancelada)",
+            "shipedge/orders/shipped (WMS Shipedge Orden Enviada)",
+            "shipedge/inventory/changes (WMS Shipedge Ajuste Inventario)",
+            "refunds/create (Shopify Reembolso Creado)"
+        ]
+    ).ask()
+    if not event_type: return
+
+    clean_event = event_type.split(" ")[0]
+    order_num = questionary.text("Ingresa el número de orden objetivo (ej. ORD-20260827-001):", "ORD-20260827-001").ask()
+    
+    prof = config.credentials.get(p_choice, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    exporter = APIExporter(url, prof.get("token"))
+
+    console.print(f"[yellow]⚙️ Enviando simulación de webhook '{clean_event}'...[/yellow]")
+    res = exporter.simulate_webhook_event(prof.get("company_id"), event_type=clean_event, order_num=order_num, process_id=prof.get("process_id"))
+    
+    if res.get("success"):
+        console.print(f"[bold green]✅ Webhook '{event_type}' procesado por la API con HTTP {res.get('status')}.[/bold green]")
+    else:
+        console.print(f"[bold red]❌ Error o rechazo de Webhook ({res.get('status')}): {res.get('error')}[/bold red]")
+
+def api_rma_return_flow():
+    console.print("\n[bold cyan]↩️ FASE 2: REGISTRO DE DEVOLUCIÓN / RMA VÍA API[/bold cyan]")
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil para registrar la devolución:", choices=valid_choices).ask()
+    if not p_choice: return
+
+    order_num = questionary.text("Número de Orden (ej. ORD-20260827-001):").ask()
+    sku = questionary.text("SKU del producto a devolver (ej. SKU-DEFECT-01):").ask()
+    qty = int(questionary.text("Cantidad a devolver?", "1").ask() or 1)
+    reason = questionary.select("Motivo de la devolución:", choices=["Defective", "Customer Return", "Wrong Item", "Damaged in Transit"]).ask()
+    
+    if not order_num or not sku: return
+
+    prof = config.credentials.get(p_choice, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    exporter = APIExporter(url, prof.get("token"))
+
+    res = exporter.send_return_rma(prof.get("company_id"), order_num, sku, quantity=qty, reason=reason)
+    if res.get("success"):
+        console.print(f"[bold green]✅ RMA '{res.get('rma')}' registrado con éxito en la API.[/bold green]")
+    else:
+        console.print(f"[bold red]❌ Error al registrar RMA ({res.get('status')}): {res.get('error')}[/bold red]")
+
+def api_stress_test_flow():
+    console.print("\n[bold magenta]⚡ FASE 1: PRUEBA DE ESTRÉS Y RENDIMIENTO DE APIS[/bold magenta]")
+    valid_choices = get_valid_profiles()
+    if not valid_choices:
+        console.print("\n[bold yellow]⚠️ No tienes perfiles reales configurados.[/bold yellow]")
+        return
+    p_choice = questionary.select("Selecciona el perfil para auditar:", choices=valid_choices).ask()
+    if not p_choice: return
+    
+    n_req = int(questionary.text("¿Cuántas peticiones HTTP deseas enviar?", "30").ask() or 30)
+    c_threads = int(questionary.text("¿Nivel de concurrencia (hilos en paralelo)?", "10").ask() or 10)
+    
+    stress_test(profile=p_choice, requests_count=n_req, concurrency=c_threads)
 
 def interactive_menu(ctx: typer.Context):
     while True:
@@ -2003,7 +2407,7 @@ def shipedge(count: int = 50, output: Optional[str] = None, lang: str = "all", c
     """Genera productos con formato específico de importación Shipedge."""
     filename = output or get_timestamp_filename("shipedge_products")
     console.print(f"[bold cyan]🚢 OMNISYRAX: Generando {count} productos Shipedge ({lang}, categoría: {category}, marca: {brand})...[/bold cyan]")
-    data = ShipEdgeGenerator(lang=lang, category=category).generate_batch(count)
+    data = ShipEdgeGenerator(lang=lang, category=category, brand=brand).generate_batch(count)
     CSVExporter.export(data, filename, config.output_dir)
     console.print(f"[bold green]✅ Shipedge CSV listo en data/{filename}[/bold green]")
 
@@ -2047,6 +2451,7 @@ def orders(
     token: Optional[str] = None,
     company_id: Optional[str] = None,
     process_id: Optional[str] = None,
+    api_url: Optional[str] = None,
     multi_sku: bool = True,
     output: Optional[str] = None,
     skus: Optional[List[str]] = None,
@@ -2091,7 +2496,8 @@ def orders(
                         "token": p_data.get("token"),
                         "company_id": p_data.get("company_id"),
                         "process_id": p_data.get("process_id"),
-                        "currency": p_data.get("currency")
+                        "currency": p_data.get("currency"),
+                        "api_url": p_data.get("api_base_url") or api_url
                     })
         elif token and company_id and process_id:
             target_profiles.append({
@@ -2099,7 +2505,8 @@ def orders(
                 "token": token,
                 "company_id": company_id,
                 "process_id": process_id,
-                "currency": None
+                "currency": None,
+                "api_url": api_url
             })
 
         if not target_profiles:
@@ -2115,7 +2522,8 @@ def orders(
                 console.print(f"[bold yellow]⚠️ Saltando {prof['name']}: No tiene los datos reales configurados en credentials.yaml[/bold yellow]")
                 continue
 
-            exporter = APIExporter(config.get("api_base_url"), prof['token'])
+            base_url = prof.get("api_url") or config.get("api_base_url")
+            exporter = APIExporter(base_url, prof['token'])
             
             # Intentar obtener SKUs reales del tenant para evitar errores 422
             tenant_skus = exporter.get_tenant_skus(prof['company_id'])
@@ -2140,6 +2548,106 @@ def orders(
 
         # Imprimir tabla resumen
         print_summary_table(all_results)
+
+@app.command()
+def qa_api(
+    profile: str = typer.Option("default", "--profile", help="Nombre del perfil en credentials.yaml para ejecutar QA")
+):
+    """Ejecuta la Suite de Pruebas de QA de APIs validando conectividad, idempotencia y respuestas HTTP."""
+    prof = config.credentials.get(profile, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    token = prof.get("token")
+    cid = prof.get("company_id")
+    pid = prof.get("process_id")
+
+    if not token or "AQUÍ" in str(token):
+        console.print(f"[bold red]❌ El perfil '{profile}' no tiene credenciales configuradas.[/bold red]")
+        return
+
+    console.print(f"\n[bold cyan]🧪 Ejecutando Suite de QA de APIs para perfil '{profile}' ({url})...[/bold cyan]")
+    exporter = APIExporter(url, token)
+    res = exporter.run_qa_api_suite(cid, pid)
+
+    table = Table(title=f"Resultados de QA API - Perfil {profile}")
+    table.add_column("Prueba", style="cyan")
+    table.add_column("Código HTTP", justify="center")
+    table.add_column("Resultado", justify="center")
+
+    for d in res["details"]:
+        status_str = "[bold green]✅ PASS[/bold green]" if d["passed"] else "[bold red]❌ FAIL[/bold red]"
+        table.add_row(d["test"], str(d["code"]), status_str)
+
+    console.print(table)
+    console.print(f"[bold green]Pruebas Exitosas: {res['passed']}[/bold green] | [bold red]Fallidas: {res['failed']}[/bold red]\n")
+
+@app.command()
+def stress_test(
+    profile: str = typer.Option("default", "--profile", help="Nombre del perfil en credentials.yaml"),
+    requests_count: int = typer.Option(50, "--requests", "-n", help="Número total de peticiones HTTP a enviar"),
+    concurrency: int = typer.Option(10, "--concurrency", "-c", help="Número de hilos/peticiones concurrentes"),
+    target_path: str = typer.Option("/api/1.0/tenants/{tenant_id}/orders", "--path", help="Endpoint a auditar")
+):
+    """Fase 1: Ejecuta una prueba de estrés y carga sobre la API de Condor reportando latencias y RPS."""
+    if type(profile).__name__ == "OptionInfo" or "OptionInfo" in str(type(profile)):
+        profile = "default"
+    if type(requests_count).__name__ == "OptionInfo" or "OptionInfo" in str(type(requests_count)):
+        requests_count = 50
+    if type(concurrency).__name__ == "OptionInfo" or "OptionInfo" in str(type(concurrency)):
+        concurrency = 10
+    if type(target_path).__name__ == "OptionInfo" or "OptionInfo" in str(type(target_path)):
+        target_path = "/api/1.0/tenants/{tenant_id}/orders"
+
+    prof = config.credentials.get(profile, {})
+    url = prof.get("api_base_url") or config.get("api_base_url")
+    token = prof.get("token")
+    cid = prof.get("company_id")
+
+    if not token or "AQUÍ" in str(token):
+        console.print(f"[bold red]❌ El perfil '{profile}' no tiene credenciales válidas configuradas.[/bold red]")
+        return
+
+    console.print(f"\n[bold magenta]⚡ FASE 1: STRESS & PERFORMANCE DASHBOARD[/bold magenta]")
+    console.print(f"[cyan]Target: {url} | Tenant CID: {cid} | Peticiones: {requests_count} | Concurrencia: {concurrency}[/cyan]\n")
+
+    exporter = APIExporter(url, token)
+    metrics = exporter.run_stress_test(cid, total_requests=requests_count, concurrency=concurrency, target_path=target_path)
+
+    # Mostrar Dashboard en Consola
+    dashboard = Table(title=f"🚀 Performance Dashboard - {profile}", show_header=True, header_style="bold green")
+    dashboard.add_column("Métrica", style="cyan")
+    dashboard.add_column("Valor", style="bold white", justify="right")
+
+    dashboard.add_row("Peticiones Totales", str(metrics["total_requests"]))
+    dashboard.add_row("Nivel de Concurrencia", f"{metrics['concurrency']} hilos")
+    dashboard.add_row("Tiempo Total Ejecució", f"{metrics['total_duration_sec']} s")
+    dashboard.add_row("Throughput (RPS)", f"[bold green]{metrics['rps']} req/sec[/bold green]")
+    dashboard.add_row("Latencia Mínima", f"{metrics['latency_ms']['min']} ms")
+    dashboard.add_row("Latencia Promedio", f"{metrics['latency_ms']['avg']} ms")
+    dashboard.add_row("Latencia Max (p95)", f"{metrics['latency_ms']['p95']} ms")
+    dashboard.add_row("Latencia Máxima Peak", f"{metrics['latency_ms']['max']} ms")
+    dashboard.add_row("Errores / Timeouts", f"[red]{metrics['errors']}[/red]" if metrics['errors'] > 0 else "[green]0[/green]")
+
+    console.print(dashboard)
+
+    # Desglose de Códigos HTTP
+    status_table = Table(title="📊 Desglose de Respuestas HTTP", show_header=True, header_style="bold yellow")
+    status_table.add_column("Código HTTP", justify="center")
+    status_table.add_column("Cantidad", justify="right")
+    status_table.add_column("Estado", justify="center")
+
+    for code, count in metrics["status_counts"].items():
+        if code in [200, 201, 204]:
+            st_text = "[bold green]✅ 200 OK[/bold green]"
+        elif code == 429:
+            st_text = "[bold yellow]⏳ 429 Rate Limit[/bold yellow]"
+        elif code == 401:
+            st_text = "[bold red]🔑 401 Unauthorized[/bold red]"
+        else:
+            st_text = f"[bold red]❌ HTTP {code}[/bold red]"
+        status_table.add_row(str(code), str(count), st_text)
+
+    console.print(status_table)
+    console.print("\n")
 
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context):

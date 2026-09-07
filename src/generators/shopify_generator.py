@@ -16,7 +16,7 @@ class ShopifyGenerator(BaseGenerator):
         
     def generate_single(self) -> ShopifyProduct:
         # Intentar obtener producto real en vivo desde API
-        live_data = APIProductFetcher.get_live_product(category=self.selected_category, brand=self.selected_brand)
+        live_data = APIProductFetcher.get_live_product(category=self.selected_category, brand=self.selected_brand, lang=self.lang)
         
         if live_data:
             full_title = live_data["name"]

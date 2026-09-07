@@ -9,13 +9,14 @@ from src.utils.api_product_fetcher import APIProductFetcher
 class ShipEdgeGenerator(BaseGenerator):
     """Generador especializado para productos con formato de importación Shipedge."""
     
-    def __init__(self, seed: int = None, lang: str = "es", category: str = "all"):
+    def __init__(self, seed: int = None, lang: str = "es", category: str = "all", brand: str = "all"):
         super().__init__(seed=seed, lang=lang)
         self.selected_category = category
+        self.selected_brand = brand
         
     def generate_single(self) -> ShipEdgeProduct:
         # Intentar obtener producto real en vivo desde API
-        live_data = APIProductFetcher.get_live_product(category=self.selected_category)
+        live_data = APIProductFetcher.get_live_product(category=self.selected_category, brand=self.selected_brand, lang=self.lang)
         
         if live_data:
             prod_name = live_data["name"]

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
 import logging
+import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 from src.domain.models import Order, Product
@@ -10,15 +11,27 @@ logger = logging.getLogger(__name__)
 class APIExporter:
     """
     Carga datos a la API de Omnio replicando el comportamiento del cargador original JS.
+    Soporta Idempotencia y los endpoints tanto públicos como por tenant.
     """
     
     def __init__(self, base_url: str, token: str):
         self.base_url = base_url.rstrip('/')
-        self.headers = {
-            "Authorization": f"Bearer {token}",
+        clean_token = str(token or "").strip().strip('"').strip("'")
+        if clean_token.lower().startswith("bearer "):
+            clean_token = clean_token[7:].strip()
+        self.base_headers = {
+            "Authorization": f"Bearer {clean_token}",
             "Accept": "application/json",
             "Content-Type": "application/json"
         }
+
+    def _get_headers(self, idempotency_key: Optional[str] = None) -> Dict[str, str]:
+        """Genera los headers incluyendo la clave de idempotencia única si se solicita o por defecto."""
+        headers = self.base_headers.copy()
+        key = idempotency_key or str(uuid.uuid4())
+        headers["Idempotency-Key"] = key
+        headers["X-Idempotency-Key"] = key
+        return headers
 
     def get_company_id(self) -> Optional[str]:
         """Intenta obtener el Company ID asociado al token."""
@@ -80,14 +93,32 @@ class APIExporter:
     def _upload_single_order(self, order: Order, company_id: str, process_id: str, index: int, endpoint: str, forced_currency: str = None) -> Dict[str, Any]:
         payload = self._build_order_payload(order, company_id, process_id, index, forced_currency)
         order_num_with_idx = payload.get("order_num", f"{order.order_num}-{index}")
+        headers = self._get_headers(idempotency_key=f"order-{order_num_with_idx}")
         try:
-            response = requests.post(endpoint, json=payload, headers=self.headers, timeout=15)
+            response = requests.post(endpoint, json=payload, headers=headers, timeout=15)
             
             # Si el error es de moneda inválida, reintentar automáticamente con "USD"
             if response.status_code == 422 and "currency" in response.text.lower() and payload.get("currency") != "USD":
                 logger.info(f"⚠️ Moneda '{payload.get('currency')}' no soportada por el tenant. Auto-ajustando a 'USD' para {order_num_with_idx}...")
                 payload["currency"] = "USD"
-                response = requests.post(endpoint, json=payload, headers=self.headers, timeout=15)
+                response = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+
+            # Si 401 Unauthenticated en el endpoint público, reintentar con el endpoint de tenant (/api/1.0/tenants/{company_id}/orders)
+            if response.status_code == 401 and "/admin/api/2024-01/" in endpoint:
+                alt_endpoint = f"{self.base_url}/api/1.0/tenants/{company_id}/orders"
+                logger.info(f"🔄 Reintentando con endpoint alternativo de tenant: {alt_endpoint}")
+                response = requests.post(alt_endpoint, json=payload, headers=headers, timeout=15)
+
+            # Si 429 Too Many Attempts (rate limit de Laravel), pausar brevemente y reintentar
+            if response.status_code == 429:
+                import time
+                logger.info(f"⏳ Rate limit alcanzado (429) para {order_num_with_idx}. Pausando 2 segundos antes de reintentar...")
+                time.sleep(2)
+                target = alt_endpoint if 'alt_endpoint' in locals() else endpoint
+                response = requests.post(target, json=payload, headers=headers, timeout=15)
+                if response.status_code == 429:
+                    time.sleep(3)
+                    response = requests.post(target, json=payload, headers=headers, timeout=15)
 
             if response.status_code in [200, 201]:
                 logger.info(f"✅ Orden {order_num_with_idx} cargada con éxito.")
@@ -367,28 +398,38 @@ class APIExporter:
         return []
 
     def get_product_by_sku(self, sku: str) -> Optional[Dict[str, Any]]:
-        """Obtiene un producto por su SKU usando search."""
+        """Obtiene un producto por su SKU buscando en las variantes de la API."""
         endpoint = f"{self.base_url}/admin/api/2024-01/products"
-        params = {"search": f"sku:{sku}"}
-        try:
-            response = requests.get(endpoint, headers=self.headers, params=params, timeout=15)
-            if response.status_code == 200:
-                data = response.json().get("data", [])
-                if data:
-                    return data[0]
-            else:
-                logger.error(f"Error al buscar producto {sku}: {response.status_code} - {response.text}")
-        except Exception as e:
-            logger.error(f"Excepción al buscar producto {sku}: {e}")
+        target_sku = sku.strip().lower()
+        
+        # Iterar las primeras páginas de productos buscando el SKU exacto
+        for page in range(1, 10):
+            try:
+                params = {"include": "skus", "page": page, "per_page": 100}
+                response = requests.get(endpoint, headers=self.headers, params=params, timeout=15)
+                if response.status_code == 200:
+                    data = response.json().get("data", [])
+                    if not data:
+                        break
+                    for prod in data:
+                        skus_list = prod.get("skus") or []
+                        for s in skus_list:
+                            if str(s.get("sku")).strip().lower() == target_sku:
+                                return prod
+                        if str(prod.get("sku")).strip().lower() == target_sku:
+                            return prod
+                else:
+                    break
+            except Exception as e:
+                logger.error(f"Excepción al buscar producto {sku}: {e}")
+                break
         return None
 
     def fulfill_shipment(self, shipment_id: int, tracking_number: str) -> Dict[str, Any]:
-        """Marca un envío como despachado (status shipped) y le asigna tracking."""
-        endpoint = f"{self.base_url}/admin/api/2024-01/shipments/{shipment_id}/status"
-        payload = {
-            "status": "shipped",
-            "tracking_number": tracking_number
-        }
+        """Marca una orden/envío como despachado (status shipped)."""
+        # Usamos change-status en la orden directamente para no disparar el bug del backend de CONDOR (Undefined array key -1)
+        endpoint = f"{self.base_url}/admin/api/2024-01/orders/{shipment_id}/change-status"
+        payload = {"status": "shipped"}
         try:
             response = requests.patch(endpoint, json=payload, headers=self.headers, timeout=15)
             if response.status_code in [200, 204]:
@@ -397,6 +438,24 @@ class APIExporter:
                 return {"success": False, "error": f"Error {response.status_code}: {response.text}"}
         except Exception as e:
             return {"success": False, "error": str(e)}
+
+    def get_all_open_shipments(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """Obtiene envíos pendientes (no despachados) de las órdenes del tenant."""
+        endpoint = f"{self.base_url}/admin/api/2024-01/orders"
+        params = {"include": "shipments", "per_page": limit}
+        shipments = []
+        try:
+            response = requests.get(endpoint, headers=self.headers, params=params, timeout=15)
+            if response.status_code == 200:
+                orders = response.json().get("data", [])
+                for order in orders:
+                    for s in (order.get("shipments") or []):
+                        if str(s.get("status")).lower() != "shipped":
+                            s["order_num"] = order.get("order_num")
+                            shipments.append(s)
+        except Exception as e:
+            logger.error(f"Error obteniendo envíos: {e}")
+        return shipments
 
     def delete_order(self, order_id: Any) -> Dict[str, Any]:
         """Elimina/cancela una orden vía API usando su ID de base de datos."""
@@ -436,7 +495,241 @@ class APIExporter:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
+    def upload_tenant_metadata(self, tenant_id: str, key: str, value: Any, entity_type: str = "sku") -> Dict[str, Any]:
+        """Agrega o actualiza metadatos dinámicos por tenant (/api/1.0/tenants/{tenant_id}/metadata)."""
+        endpoint = f"{self.base_url}/api/1.0/tenants/{tenant_id}/metadata"
+        payload = {
+            "key": key,
+            "value": value,
+            "entity_type": entity_type
+        }
+        headers = self._get_headers(idempotency_key=f"meta-{tenant_id}-{key}")
+        try:
+            response = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+            if response.status_code in [200, 201]:
+                return {"success": True, "status": response.status_code, "error": ""}
+            else:
+                return {"success": False, "status": response.status_code, "error": response.text[:200]}
+        except Exception as e:
+            return {"success": False, "status": 0, "error": str(e)}
 
+    def upload_sku_alternative(self, tenant_id: str, original_sku: str, alternative_sku: str) -> Dict[str, Any]:
+        """Registra un SKU alternativo/equivalente en el tenant."""
+        endpoint = f"{self.base_url}/api/1.0/tenants/{tenant_id}/sku-alternative"
+        payload = {
+            "sku": original_sku,
+            "alternative_sku": alternative_sku
+        }
+        headers = self._get_headers(idempotency_key=f"skualt-{tenant_id}-{original_sku}-{alternative_sku}")
+        try:
+            response = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+            if response.status_code in [200, 201]:
+                return {"success": True, "status": response.status_code, "error": ""}
+            else:
+                return {"success": False, "status": response.status_code, "error": response.text[:200]}
+        except Exception as e:
+            return {"success": False, "status": 0, "error": str(e)}
 
+    def run_qa_api_suite(self, company_id: str, process_id: str, max_tests: int = 50) -> Dict[str, Any]:
+        """Ejecuta una Suite de Pruebas de QA Masiva iterando dinámicamente sobre el catálogo completo de endpoints (609 endpoints)."""
+        import os
+        import json
+        logger.info(f"🧪 Iniciando Suite Masiva de QA de APIs para Company ID: {company_id}")
+        suite_results = {"passed": 0, "failed": 0, "details": []}
+        
+        catalog_path = "data/condor_api_catalog.json"
+        endpoints_to_test = []
 
+        if os.path.exists(catalog_path):
+            with open(catalog_path, "r") as f:
+                catalog = json.load(f)
+                # Filtrar métodos GET seguros para auditoría automatizada
+                get_endpoints = [ep for ep in catalog if ep["method"] == "GET"]
+                endpoints_to_test = get_endpoints[:max_tests]
+        
+        if not endpoints_to_test:
+            # Fallback si no existe catálogo
+            endpoints_to_test = [
+                {"method": "GET", "path": "/api/1.0/users/information", "spec": "omnio"},
+                {"method": "GET", "path": "/admin/api/2024-01/products", "spec": "tenant"},
+                {"method": "GET", "path": f"/api/1.0/tenants/{company_id}/orders", "spec": "tenant"},
+                {"method": "GET", "path": f"/api/1.0/tenants/{company_id}/skus", "spec": "tenant"},
+                {"method": "GET", "path": f"/api/1.0/tenants/{company_id}/shipments", "spec": "tenant"},
+                {"method": "GET", "path": f"/api/1.0/tenants/{company_id}/boxes", "spec": "tenant"},
+                {"method": "GET", "path": f"/api/1.0/tenants/{company_id}/metadata", "spec": "tenant"}
+            ]
 
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        def _test_single(ep):
+            raw_path = ep["path"]
+            if raw_path.startswith("/tenants/"):
+                raw_path = f"/api/1.0{raw_path}"
+            elif raw_path.startswith("tenants/"):
+                raw_path = f"/api/1.0/{raw_path}"
+
+            path = raw_path.replace("{tenant_id}", str(company_id)).replace("{company_id}", str(company_id)).replace("{tenant}", str(company_id))
+            url = f"{self.base_url}{path}" if path.startswith("/") else f"{self.base_url}/{path}"
+            
+            try:
+                res = requests.get(url, headers=self._get_headers(), timeout=4)
+                passed = res.status_code in [200, 201, 204]
+                return {
+                    "test": f"{ep['method']} {ep['path']}",
+                    "code": res.status_code,
+                    "passed": passed
+                }
+            except Exception:
+                return {
+                    "test": f"{ep['method']} {ep['path']}",
+                    "code": 0,
+                    "passed": False
+                }
+
+        with ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(_test_single, ep) for ep in endpoints_to_test]
+            for future in as_completed(futures):
+                res = future.result()
+                suite_results["details"].append(res)
+                if res["passed"]:
+                    suite_results["passed"] += 1
+                else:
+                    suite_results["failed"] += 1
+
+        return suite_results
+
+    def run_stress_test(self, company_id: str, total_requests: int = 50, concurrency: int = 10, target_path: str = "/api/1.0/tenants/{tenant_id}/orders") -> Dict[str, Any]:
+        """
+        Fase 1: Ejecuta una prueba de estrés y carga masiva sobre las APIs de Condor.
+        Mide latencia (min, max, avg, p95), peticiones por segundo (RPS) y desglose de códigos HTTP.
+        """
+        import time
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        path = target_path.replace("{tenant_id}", str(company_id)).replace("{company_id}", str(company_id)).replace("{tenant}", str(company_id))
+        url = f"{self.base_url}{path}" if path.startswith("/") else f"{self.base_url}/{path}"
+
+        latencies = []
+        status_counts = {}
+        errors = 0
+
+        start_total = time.time()
+
+        def _make_request(idx: int):
+            t0 = time.time()
+            headers = self._get_headers(idempotency_key=f"stress-{company_id}-{idx}-{t0}")
+            try:
+                res = requests.get(url, headers=headers, timeout=10)
+                t1 = time.time()
+                elapsed_ms = (t1 - t0) * 1000
+                return {"code": res.status_code, "latency_ms": elapsed_ms, "error": None}
+            except Exception as e:
+                t1 = time.time()
+                elapsed_ms = (t1 - t0) * 1000
+                return {"code": 0, "latency_ms": elapsed_ms, "error": str(e)}
+
+        with ThreadPoolExecutor(max_workers=concurrency) as executor:
+            futures = [executor.submit(_make_request, i) for i in range(total_requests)]
+            for future in as_completed(futures):
+                res = future.result()
+                code = res["code"]
+                latencies.append(res["latency_ms"])
+                status_counts[code] = status_counts.get(code, 0) + 1
+                if code == 0 or code >= 500:
+                    errors += 1
+
+        end_total = time.time()
+        total_duration = end_total - start_total
+        rps = total_requests / total_duration if total_duration > 0 else 0
+
+        latencies.sort()
+        min_lat = latencies[0] if latencies else 0
+        max_lat = latencies[-1] if latencies else 0
+        avg_lat = sum(latencies) / len(latencies) if latencies else 0
+        p95_idx = int(len(latencies) * 0.95)
+        p95_lat = latencies[min(p95_idx, len(latencies) - 1)] if latencies else 0
+
+        return {
+            "total_requests": total_requests,
+            "concurrency": concurrency,
+            "total_duration_sec": round(total_duration, 2),
+            "rps": round(rps, 2),
+            "latency_ms": {
+                "min": round(min_lat, 2),
+                "max": round(max_lat, 2),
+                "avg": round(avg_lat, 2),
+                "p95": round(p95_lat, 2)
+            },
+            "status_counts": status_counts,
+            "errors": errors,
+            "target_url": url
+        }
+
+    def send_return_rma(self, tenant_id: str, order_num: str, sku: str, quantity: int = 1, reason: str = "Defective") -> Dict[str, Any]:
+        """Fase 2: Crea e inyecta un RMA / Registro de Devolución vía API."""
+        endpoint = f"{self.base_url}/api/1.0/tenants/{tenant_id}/return-item"
+        payload = {
+            "order_num": order_num,
+            "sku": sku,
+            "quantity": quantity,
+            "reason": reason,
+            "status": "pending",
+            "rma_number": f"RMA-{order_num}-{int(datetime.now().timestamp())}"
+        }
+        headers = self._get_headers(idempotency_key=f"rma-{tenant_id}-{order_num}-{sku}")
+        try:
+            res = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+            if res.status_code in [200, 201]:
+                return {"success": True, "status": res.status_code, "rma": payload["rma_number"], "error": ""}
+            else:
+                return {"success": False, "status": res.status_code, "error": res.text[:200]}
+        except Exception as e:
+            return {"success": False, "status": 0, "error": str(e)}
+
+    def simulate_webhook_event(self, company_id: str, event_type: str = "orders/canceled", order_num: str = "ORD-TEST-100", process_id: str = None) -> Dict[str, Any]:
+        """Fase 2: Simula el envío de un evento Webhook externo (Shopify/Shipedge WMS) hacia la API de Condor."""
+        pid = process_id or "1"
+        if "shipedge" in event_type:
+            sub = event_type.replace("shipedge/", "")
+            endpoint = f"{self.base_url}/api/1.0/tenants/{company_id}/webhooks/shipedge/{sub}"
+        elif "mercado" in event_type:
+            endpoint = f"{self.base_url}/api/1.0/webhooks/mercado_libre"
+        else:
+            endpoint = f"{self.base_url}/api/1.0/processes/{pid}/shopify/webhook/{event_type}"
+
+        payload = {
+            "id": int(datetime.now().timestamp()),
+            "order_num": order_num,
+            "event": event_type,
+            "created_at": datetime.now().isoformat(),
+            "note": "Simulado desde OMNISYRAX Phase 2 Webhook Simulator"
+        }
+        headers = self._get_headers(idempotency_key=f"wh-{company_id}-{order_num}-{event_type}")
+        try:
+            res = requests.post(endpoint, json=payload, headers=headers, timeout=15)
+            if res.status_code in [200, 201, 204]:
+                return {"success": True, "status": res.status_code, "event": event_type, "error": ""}
+            else:
+                return {"success": False, "status": res.status_code, "event": event_type, "error": res.text[:200]}
+        except Exception as e:
+            return {"success": False, "status": 0, "event": event_type, "error": str(e)}
+
+    def get_any_endpoint(self, raw_path: str, company_id: str = "1", params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Consume cualquier endpoint GET del catálogo dinámicamente sustituyendo los parámetros de tenant."""
+        clean_path = raw_path
+        if clean_path.startswith("/tenants/"):
+            clean_path = f"/api/1.0{clean_path}"
+        elif clean_path.startswith("tenants/"):
+            clean_path = f"/api/1.0/{clean_path}"
+
+        clean_path = clean_path.replace("{tenant_id}", str(company_id)).replace("{company_id}", str(company_id)).replace("{tenant}", str(company_id))
+        url = f"{self.base_url}{clean_path}" if clean_path.startswith("/") else f"{self.base_url}/{clean_path}"
+
+        try:
+            res = requests.get(url, headers=self._get_headers(), params=params, timeout=15)
+            if res.status_code == 200:
+                return {"success": True, "status": res.status_code, "data": res.json(), "error": ""}
+            else:
+                return {"success": False, "status": res.status_code, "data": None, "error": res.text[:300]}
+        except Exception as e:
+            return {"success": False, "status": 0, "data": None, "error": str(e)}
