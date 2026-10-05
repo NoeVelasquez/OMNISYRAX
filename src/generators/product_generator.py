@@ -64,7 +64,7 @@ class ProductGenerator(BaseGenerator):
         # Generación de SKU extenso, profesional y 100% único
         clean_brand = "".join(c for c in brand if c.isalnum()).upper()[:4] or "GEN"
         date_str = datetime.now().strftime("%y%m%d")
-        random_suffix = "".join(random.choices("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", k=4))
+        random_suffix = "".join(random.choices("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", k=6))
         sku = f"SKU-{category[:3].upper()}-{clean_brand}-{date_str}-{random_suffix}"
         
         supplier_data = random.choice(data_pool.SUPPLIERS_DATA)

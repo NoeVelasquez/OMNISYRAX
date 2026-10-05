@@ -25,6 +25,11 @@ class APIExporter:
             "Content-Type": "application/json"
         }
 
+    @property
+    def headers(self) -> Dict[str, str]:
+        """Propiedad de compatibilidad que retorna los headers base con Idempotency-Key."""
+        return self._get_headers()
+
     def _get_headers(self, idempotency_key: Optional[str] = None) -> Dict[str, str]:
         """Genera los headers incluyendo la clave de idempotencia única si se solicita o por defecto."""
         headers = self.base_headers.copy()
@@ -136,7 +141,7 @@ class APIExporter:
             return {"order_num": order_num_with_idx, "success": False, "status": 0, "error": f"Error de conexión: {str(e)}"}
 
     def upload_orders(self, orders: List[Order], company_id: str, process_id: str, max_workers: int = 5, forced_currency: str = None) -> List[Dict[str, Any]]:
-        endpoint = f"{self.base_url}/admin/api/2024-01/orders"
+        endpoint = f"{self.base_url}/api/1.0/tenants/{company_id}/orders"
         results = []
         
         if not orders:
@@ -186,10 +191,29 @@ class APIExporter:
         return {
             "order_num": f"{order.order_num}-{index}",
             "currency": currency,
+            "currency_id": 1,
+            "ship_method": "AVC-AIR",
+            "ship_carrier": "AVC",
             "order_date": order.order_date.strftime("%Y-%m-%d") if isinstance(order.order_date, datetime) else str(order.order_date),
             "status_name": "draft",
             "company_id": int(company_id) if str(company_id).isdigit() else company_id,
             "process_id": int(process_id) if str(process_id).isdigit() else process_id,
+            "customer_email": order.customer.email,
+            "customer_phone": order.customer.phone,
+            "customer_firstname": order.customer.firstname,
+            "customer_lastname": order.customer.lastname,
+            "customer_address1": order.shipping_address.address1,
+            "customer_city": order.shipping_address.city,
+            "customer_state": order.shipping_address.state or "FL",
+            "customer_zip": order.shipping_address.postal_code,
+            "customer_country": country,
+            "customer_bill_firstname": order.customer.firstname,
+            "customer_bill_lastname": order.customer.lastname,
+            "customer_bill_address1": order.shipping_address.address1,
+            "customer_bill_city": order.shipping_address.city,
+            "customer_bill_state": order.shipping_address.state or "FL",
+            "customer_bill_zip": order.shipping_address.postal_code,
+            "customer_bill_country": country,
             "customer": {
                 "customer_email": order.customer.email,
                 "customer_phone": order.customer.phone,
@@ -439,15 +463,19 @@ class APIExporter:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def get_all_open_shipments(self, limit: int = 100) -> List[Dict[str, Any]]:
+    def get_all_open_shipments(self, company_id: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
         """Obtiene envíos pendientes (no despachados) de las órdenes del tenant."""
-        endpoint = f"{self.base_url}/admin/api/2024-01/orders"
+        endpoint = f"{self.base_url}/api/1.0/tenants/{company_id}/orders" if company_id else f"{self.base_url}/admin/api/2024-01/orders"
         params = {"include": "shipments", "per_page": limit}
         shipments = []
         try:
             response = requests.get(endpoint, headers=self.headers, params=params, timeout=15)
+            if response.status_code == 401 and company_id:
+                alt = f"{self.base_url}/api/1.0/tenants/{company_id}/orders"
+                response = requests.get(alt, headers=self.headers, params=params, timeout=15)
             if response.status_code == 200:
-                orders = response.json().get("data", [])
+                orders = response.json().get("data", response.json() if isinstance(response.json(), list) else [])
+                if isinstance(orders, dict): orders = orders.get("data", [])
                 for order in orders:
                     for s in (order.get("shipments") or []):
                         if str(s.get("status")).lower() != "shipped":

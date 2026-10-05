@@ -3,6 +3,7 @@
 Pool de datos estáticos y curados para la generación de pruebas.
 Incluye nombres, ciudades, categorías, marcas y datos multilingües.
 """
+import random
 
 FIRST_NAMES = [
     "Sofia", "John", "Mary", "Lucas", "Ana", "Carlos", "Sophie", "David",

@@ -112,8 +112,8 @@ class APIProductFetcher:
                     desc = item.get("description", "")
                     raw_img = item.get("images", [""])[0] if item.get("images") else ""
                     
-                    # Ignorar items basura de prueba (ej: Config-..., description-..., placehold.co)
-                    if "config-" in title.lower() or "description-" in desc.lower() or "placehold" in raw_img.lower():
+                    # Ignorar items basura de prueba (ej: Config-..., description-..., placehold.co, placeimg.com)
+                    if "config-" in title.lower() or "description-" in desc.lower() or "placehold" in raw_img.lower() or "placeimg" in raw_img.lower():
                         continue
                         
                     cat_raw = item.get("category", {}).get("name", "").lower()

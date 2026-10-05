@@ -30,7 +30,7 @@ class CHGenerator(BaseGenerator):
         transaction_id = random.randint(3200000000, 3299999999)
         order_id = transaction_id + 2
         cust_order = f"WP{random.randint(56000000, 56999999)}"
-        batch_number = random.randint(17000000000, 17999999999)
+        batch_number = now.strftime("%Y%m%d%H%M%S")
         
         root = ET.Element("OrderMessageBatch", batchNumber=str(batch_number))
         partner = ET.SubElement(root, "partnerID", name="Sunfuture Inc", roleType="vendor")

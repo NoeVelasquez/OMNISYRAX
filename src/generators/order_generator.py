@@ -4,19 +4,33 @@ from datetime import datetime, timedelta
 from src.core.base_generator import BaseGenerator
 from src.domain.models import Order, Customer, Address, OrderItem
 from src.utils import data_pool
+from src.utils.address_fetcher import AddressFetcher
 
 class OrderGenerator(BaseGenerator):
-    """Generador especializado en la creación de órdenes."""
+    """Generador especializado en la creación de órdenes con direcciones residenciales reales y únicas."""
     
-    def __init__(self, lang: str = "es"):
+    def __init__(self, lang: str = "en", country_mode: str = "US"):
         super().__init__(lang)
         self.available_skus = []
+        self.country_mode = country_mode
 
-    def generate_batch(self, count: int, multi_sku: bool = True, skus: list = None, days_back: int = 0) -> list[Order]:
+    def generate_batch(self, count: int, multi_sku: bool = True, skus: list = None, days_back: int = 0, country_mode: str = "US") -> list[Order]:
         self.multi_sku = multi_sku
         self.available_skus = skus or []
         self.days_back = days_back
-        return [self.generate_single() for _ in range(count)]
+        self.country_mode = country_mode
+
+        # Obtener direcciones residenciales reales y únicas para todo el lote
+        shipping_addresses = AddressFetcher.get_unique_addresses(count, country_mode=self.country_mode)
+        billing_addresses = AddressFetcher.get_unique_addresses(count, country_mode=self.country_mode)
+
+        orders_list = []
+        for i in range(count):
+            ship_data = shipping_addresses[i] if i < len(shipping_addresses) else shipping_addresses[0]
+            bill_data = billing_addresses[i] if i < len(billing_addresses) else billing_addresses[0]
+            orders_list.append(self.generate_single(shipping_data=ship_data, billing_data=bill_data))
+        
+        return orders_list
 
     def _generate_item(self, sku: str = None) -> OrderItem:
         if sku:
@@ -41,7 +55,7 @@ class OrderGenerator(BaseGenerator):
             sold_price=round(random.uniform(10.0, 500.0), 2)
         )
 
-    def generate_single(self) -> Order:
+    def generate_single(self, shipping_data: dict = None, billing_data: dict = None) -> Order:
         num_items = random.randint(1, 5) if self.multi_sku else 1
         
         # Garantizar SKUs únicos
@@ -50,13 +64,11 @@ class OrderGenerator(BaseGenerator):
         
         # Si hay SKUs disponibles, intentar tomarlos de ahí sin repetir
         if self.available_skus:
-            # Tomar una muestra aleatoria de SKUs únicos
             count_to_pick = min(num_items, len(self.available_skus))
             order_skus = random.sample(self.available_skus, count_to_pick)
             for sku in order_skus:
                 items.append(self._generate_item(sku=sku))
         else:
-            # Generar SKUs al azar asegurando unicidad
             while len(items) < num_items:
                 item = self._generate_item()
                 if item.sku not in used_skus:
@@ -65,9 +77,28 @@ class OrderGenerator(BaseGenerator):
         
         total_price = sum(item.quantity * item.sold_price for item in items)
         
-        # Generar dirección
-        shipping = self._generate_address()
-        billing = self._generate_address()
+        # Generar direcciones residenciales reales
+        if not shipping_data:
+            shipping_data = AddressFetcher.get_unique_addresses(1, country_mode=self.country_mode)[0]
+        if not billing_data:
+            billing_data = AddressFetcher.get_unique_addresses(1, country_mode=self.country_mode)[0]
+            
+        shipping = Address(
+            address1=shipping_data["address1"],
+            city=shipping_data["city"],
+            state=shipping_data["state"],
+            postal_code=shipping_data["zip"],
+            country=shipping_data["country"],
+            currency=shipping_data["currency"]
+        )
+        billing = Address(
+            address1=billing_data["address1"],
+            city=billing_data["city"],
+            state=billing_data["state"],
+            postal_code=billing_data["zip"],
+            country=billing_data["country"],
+            currency=billing_data["currency"]
+        )
         
         # Lógica de fecha (hoy o fechas pasadas)
         if hasattr(self, 'days_back') and self.days_back > 0:
@@ -100,27 +131,3 @@ class OrderGenerator(BaseGenerator):
             email=f"{first.lower()}.{last.lower()}@example.com",
             phone=self.faker.phone_number()
         )
-    
-    def _generate_address(self) -> Address:
-        loc = data_pool.get_random_location()
-        return Address(
-            address1=self.faker.street_address(),
-            city=loc["city"],
-            state=loc["state"],
-            postal_code=loc["zip"],
-            country=loc["country"],
-            currency=loc["currency"]
-        )
-    
-    def _generate_items(self, multi_sku: bool = True) -> list[OrderItem]:
-        num_items = random.randint(1, 5) if multi_sku else 1
-        items = []
-        for _ in range(num_items):
-            category = random.choice(data_pool.PRODUCT_CATEGORIES)
-            items.append(OrderItem(
-                sku=f"SKU-{random.randint(1000, 9999)}",
-                description=f"Product from {category}",
-                quantity=random.randint(1, 10),
-                sold_price=round(random.uniform(10, 500), 2)
-            ))
-        return items

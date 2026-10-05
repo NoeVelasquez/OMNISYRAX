@@ -809,8 +809,27 @@ def run_local_generator(action: str):
         }
         days = days_map.get(date_range, 0)
         
+        country_choice = questionary.select(
+            "¿Tipo de alcance geográfico de las órdenes?",
+            choices=[
+                "📍 Local (Solo estados de EE.UU. / Domestic US)",
+                "🌍 Global / Internacional (Fuera de EE.UU.: MX, CA, ES, GB, DE)",
+                "🔀 Mixto / Ambos (Mayoría Local EE.UU. + Global Internacional)"
+            ]
+        ).ask()
+        
+        country_map = {
+            "📍 Local (Solo estados de EE.UU. / Domestic US)": "US",
+            "🌍 Global / Internacional (Fuera de EE.UU.: MX, CA, ES, GB, DE)": "INT",
+            "🔀 Mixto / Ambos (Mayoría Local EE.UU. + Global Internacional)": "MIXED"
+        }
+        selected_country = country_map.get(country_choice, "US")
+
+        if int(qty) > 2000:
+            console.print(f"\n[bold cyan]⚡ Generando {qty} órdenes masivas con direcciones residenciales reales únicas (Dataset local + API en vivo)...[/bold cyan]\n")
+
         multi = True if "Multi-SKU" in sku_mode else False
-        orders(count=int(qty), format="csv", multi_sku=multi, days_back=days, skus=extracted_skus)
+        orders(count=int(qty), format="csv", multi_sku=multi, days_back=days, skus=extracted_skus, country=selected_country)
     elif action == "📦 Productos Estándar (CSV)":
         qty = questionary.text("Cantidad?", "50").ask()
         if not qty: return
@@ -1550,7 +1569,7 @@ def api_fulfill_shipment_flow():
 
     if "TODOS" in mode:
         console.print(f"[yellow]🔍 Buscando envíos pendientes de órdenes en {p_choice}...[/yellow]")
-        open_shipments = exporter.get_all_open_shipments()
+        open_shipments = exporter.get_all_open_shipments(cid)
         if not open_shipments:
             console.print("[bold yellow]⚠️ No se encontraron envíos pendientes en este tenant.[/bold yellow]")
             return
@@ -2457,14 +2476,17 @@ def orders(
     skus: Optional[List[str]] = None,
     skus_file: Optional[str] = typer.Option(None, "--skus-file", help="Ruta a un archivo CSV para extraer SKUs"),
     days_back: int = 0,
+    country: str = typer.Option("US", "--country", help="Ubicación de residencias: US, INT, MIXED"),
     _pregenerated_data: Optional[List[str]] = typer.Option(None, hidden=True)
 ):
-    """Genera órdenes de venta (Sales Orders) en CSV o carga vía API."""
+    """Genera órdenes de venta (Sales Orders) en CSV o carga vía API con residencias reales garantizadas."""
     # Corregir parámetros de Typer si se llama como función normal
     if type(profiles).__name__ == "OptionInfo" or "OptionInfo" in str(type(profiles)):
         profiles = None
     if type(skus_file).__name__ == "OptionInfo" or "OptionInfo" in str(type(skus_file)):
         skus_file = None
+    if type(country).__name__ == "OptionInfo" or "OptionInfo" in str(type(country)):
+        country = "US"
     if type(_pregenerated_data).__name__ == "OptionInfo" or "OptionInfo" in str(type(_pregenerated_data)):
         _pregenerated_data = None
 
@@ -2477,12 +2499,12 @@ def orders(
     if _pregenerated_data:
         data = _pregenerated_data
     else:
-        gen = OrderGenerator()
-        data = gen.generate_batch(count, multi_sku=multi_sku, skus=skus, days_back=days_back)
+        gen = OrderGenerator(country_mode=country)
+        data = gen.generate_batch(count, multi_sku=multi_sku, skus=skus, days_back=days_back, country_mode=country)
     if format == "csv":
         filename = output or get_timestamp_filename("orders")
         CSVExporter.export(data, filename, config.output_dir)
-        console.print(f"[bold green]✅ {count} Órdenes generadas (Rango: {days_back} días) en data/{filename}[/bold green]")
+        console.print(f"[bold green]✅ {count} Órdenes generadas con residencias reales ({country}) en data/{filename}[/bold green]")
     elif format == "api":
         # Lógica de carga API (Soporta múltiples perfiles)
         target_profiles = []
