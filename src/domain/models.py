@@ -37,6 +37,8 @@ class Order(BaseModel):
 class Product(BaseModel):
     product_id: int
     name: str
+    parent_product: Optional[str] = None
+    variant_name: Optional[str] = None
     description: str
     category: str
     brand: str

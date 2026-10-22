@@ -4,6 +4,8 @@ Pool de datos estáticos y curados para la generación de pruebas.
 Incluye nombres, ciudades, categorías, marcas y datos multilingües.
 """
 import random
+import unicodedata
+from typing import List, Dict, Any
 
 FIRST_NAMES = [
     "Sofia", "John", "Mary", "Lucas", "Ana", "Carlos", "Sophie", "David",
@@ -700,3 +702,144 @@ REAL_CATEGORY_IMAGES = {
 def get_real_category_image(category: str) -> str:
     images = REAL_CATEGORY_IMAGES.get(category, REAL_CATEGORY_IMAGES["Electronics"])
     return random.choice(images)
+
+def clean_sku_token(token: str, max_len: int = 4, default: str = "GEN") -> str:
+    """
+    Sanitiza cualquier texto para generar un token de SKU 100% compatible con Omnio Condor (is_sku / SkuRule).
+    Normaliza caracteres Unicode (elimina tildes como é -> e, ñ -> n), elimina símbolos y convierte a MAYÚSCULAS.
+    """
+    if not token:
+        return default
+    normalized = unicodedata.normalize('NFKD', str(token)).encode('ASCII', 'ignore').decode('utf-8')
+    alphanumeric = "".join(c for c in normalized if c.isalnum() or c in "-_").upper()
+    return alphanumeric[:max_len] if alphanumeric else default
+
+CATEGORY_VARIANTS = {
+    "Clothing": {
+        "es": [
+            {"name": "S / Negro", "code": "S-BLK", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "M / Azul", "code": "M-BLU", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "L / Rojo", "code": "L-RED", "price_factor": 1.05, "weight_factor": 1.05},
+            {"name": "XL / Blanco", "code": "XL-WHT", "price_factor": 1.1, "weight_factor": 1.1},
+            {"name": "XXL / Gris", "code": "2XL-GRY", "price_factor": 1.15, "weight_factor": 1.15}
+        ],
+        "en": [
+            {"name": "S / Black", "code": "S-BLK", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "M / Blue", "code": "M-BLU", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "L / Red", "code": "L-RED", "price_factor": 1.05, "weight_factor": 1.05},
+            {"name": "XL / White", "code": "XL-WHT", "price_factor": 1.1, "weight_factor": 1.1},
+            {"name": "XXL / Gray", "code": "2XL-GRY", "price_factor": 1.15, "weight_factor": 1.15}
+        ]
+    },
+    "Electronics": {
+        "es": [
+            {"name": "128GB / Negro", "code": "128-BLK", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "256GB / Plata", "code": "256-SLV", "price_factor": 1.25, "weight_factor": 1.0},
+            {"name": "512GB / Titanio", "code": "512-TI", "price_factor": 1.5, "weight_factor": 1.0},
+            {"name": "1TB / Azul Medianoche", "code": "1TB-BLU", "price_factor": 1.8, "weight_factor": 1.05}
+        ],
+        "en": [
+            {"name": "128GB / Black", "code": "128-BLK", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "256GB / Silver", "code": "256-SLV", "price_factor": 1.25, "weight_factor": 1.0},
+            {"name": "512GB / Titanium", "code": "512-TI", "price_factor": 1.5, "weight_factor": 1.0},
+            {"name": "1TB / Midnight Blue", "code": "1TB-BLU", "price_factor": 1.8, "weight_factor": 1.05}
+        ]
+    },
+    "Food": {
+        "es": [
+            {"name": "Botella 500ml", "code": "500ML", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Pack x6 (Lata 355ml)", "code": "PK6", "price_factor": 2.2, "weight_factor": 2.5},
+            {"name": "Edición Zero Azúcar 500ml", "code": "ZERO500", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Familiar 1.5L", "code": "1500ML", "price_factor": 1.8, "weight_factor": 2.8},
+            {"name": "Pack x12 Económico", "code": "PK12", "price_factor": 4.0, "weight_factor": 4.8}
+        ],
+        "en": [
+            {"name": "Bottle 500ml", "code": "500ML", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Pack x6 (Can 355ml)", "code": "PK6", "price_factor": 2.2, "weight_factor": 2.5},
+            {"name": "Zero Sugar Edition 500ml", "code": "ZERO500", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Family Size 1.5L", "code": "1500ML", "price_factor": 1.8, "weight_factor": 2.8},
+            {"name": "Pack x12 Value Pack", "code": "PK12", "price_factor": 4.0, "weight_factor": 4.8}
+        ]
+    },
+    "Books": {
+        "es": [
+            {"name": "Tapa Blanda", "code": "PBK", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Tapa Dura", "code": "HBK", "price_factor": 1.4, "weight_factor": 1.5},
+            {"name": "Edición Especial Ilustrada", "code": "ILUS", "price_factor": 1.9, "weight_factor": 1.8}
+        ],
+        "en": [
+            {"name": "Paperback", "code": "PBK", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Hardcover", "code": "HBK", "price_factor": 1.4, "weight_factor": 1.5},
+            {"name": "Illustrated Collector's Edition", "code": "CLT", "price_factor": 1.9, "weight_factor": 1.8}
+        ]
+    },
+    "Beauty": {
+        "es": [
+            {"name": "30ml / Tono Claro", "code": "30-CLR", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "50ml / Tono Medio", "code": "50-MED", "price_factor": 1.35, "weight_factor": 1.4},
+            {"name": "100ml / Tono Oscuro", "code": "100-DRK", "price_factor": 2.0, "weight_factor": 2.3}
+        ],
+        "en": [
+            {"name": "30ml / Light Shade", "code": "30-LGT", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "50ml / Medium Shade", "code": "50-MED", "price_factor": 1.35, "weight_factor": 1.4},
+            {"name": "100ml / Dark Shade", "code": "100-DRK", "price_factor": 2.0, "weight_factor": 2.3}
+        ]
+    },
+    "Home & Garden": {
+        "es": [
+            {"name": "Individual", "code": "IND", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Pack Doble (Set x2)", "code": "SET2", "price_factor": 1.8, "weight_factor": 1.9},
+            {"name": "Set Familiar (Set x4)", "code": "SET4", "price_factor": 3.2, "weight_factor": 3.6}
+        ],
+        "en": [
+            {"name": "Single Unit", "code": "SGL", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "2-Piece Set", "code": "SET2", "price_factor": 1.8, "weight_factor": 1.9},
+            {"name": "4-Piece Family Set", "code": "SET4", "price_factor": 3.2, "weight_factor": 3.6}
+        ]
+    },
+    "Sports": {
+        "es": [
+            {"name": "Talla M / Standard", "code": "M-STD", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Talla L / Pro Grip", "code": "L-PRO", "price_factor": 1.25, "weight_factor": 1.1},
+            {"name": "Talla XL / Edición Torneo", "code": "XL-TRN", "price_factor": 1.5, "weight_factor": 1.2}
+        ],
+        "en": [
+            {"name": "Size M / Standard", "code": "M-STD", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Size L / Pro Grip", "code": "L-PRO", "price_factor": 1.25, "weight_factor": 1.1},
+            {"name": "Size XL / Tournament Edition", "code": "XL-TRN", "price_factor": 1.5, "weight_factor": 1.2}
+        ]
+    },
+    "Toys": {
+        "es": [
+            {"name": "Edición Estándar", "code": "STD", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Edición Deluxe con Accesorios", "code": "DLX", "price_factor": 1.4, "weight_factor": 1.3},
+            {"name": "Pack Coleccionista x3", "code": "PK3", "price_factor": 2.6, "weight_factor": 2.8}
+        ],
+        "en": [
+            {"name": "Standard Edition", "code": "STD", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Deluxe Edition with Accessories", "code": "DLX", "price_factor": 1.4, "weight_factor": 1.3},
+            {"name": "Collector 3-Pack", "code": "PK3", "price_factor": 2.6, "weight_factor": 2.8}
+        ]
+    },
+    "Default": {
+        "es": [
+            {"name": "Estándar", "code": "STD", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Plus (Pack x2)", "code": "PLUS", "price_factor": 1.75, "weight_factor": 1.8},
+            {"name": "Pro / Max", "code": "PRO", "price_factor": 2.3, "weight_factor": 2.2}
+        ],
+        "en": [
+            {"name": "Standard", "code": "STD", "price_factor": 1.0, "weight_factor": 1.0},
+            {"name": "Plus (Pack x2)", "code": "PLUS", "price_factor": 1.75, "weight_factor": 1.8},
+            {"name": "Pro / Max", "code": "PRO", "price_factor": 2.3, "weight_factor": 2.2}
+        ]
+    }
+}
+
+def get_category_variants(category: str, lang: str = "es", count: int = 3) -> List[Dict[str, Any]]:
+    """Obtiene una lista de variantes realistas para la categoría indicada."""
+    cat_key = category if category in CATEGORY_VARIANTS else "Default"
+    lang_key = lang if lang in ["es", "en"] else "es"
+    variants_pool = CATEGORY_VARIANTS.get(cat_key, {}).get(lang_key) or CATEGORY_VARIANTS["Default"]["es"]
+    if count <= len(variants_pool):
+        return variants_pool[:count]
+    return variants_pool

@@ -753,6 +753,21 @@ def prompt_language() -> str:
     }
     return lang_map.get(lang_choice, "all")
 
+def prompt_sku_mode() -> str:
+    sku_choice = questionary.select(
+        "¿Estructura de SKUs por Producto?",
+        choices=[
+            "📦 Single-SKU (1 Producto = 1 SKU)",
+            "🗂️ Multi-SKU (1 Producto Padre con 2 a 5 Variantes/SKUs)",
+            "🎲 Mixto (Combinación aleatoria de Single y Multi-SKU)"
+        ]
+    ).ask()
+    if not sku_choice or "Single-SKU" in sku_choice:
+        return "single"
+    if "Multi-SKU" in sku_choice:
+        return "multi"
+    return "mixed"
+
 def run_local_generator(action: str):
     if action == "🛍️ Órdenes de Venta (CSV)":
         qty = questionary.text("Cantidad?", "10").ask()
@@ -836,18 +851,20 @@ def run_local_generator(action: str):
         selected_cat = prompt_category()
         selected_brand = prompt_brand(selected_cat)
         selected_lang = prompt_language()
+        sku_mode = prompt_sku_mode()
         search_target = selected_brand if selected_brand != "all" else selected_cat
         console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        products(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand)
+        products(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand, sku_mode=sku_mode)
     elif action == "🏪 Productos Shopify (CSV)":
         qty = questionary.text("Cantidad?", "20").ask()
         if not qty: return
         selected_cat = prompt_category()
         selected_brand = prompt_brand(selected_cat)
         selected_lang = prompt_language()
+        sku_mode = prompt_sku_mode()
         search_target = selected_brand if selected_brand != "all" else selected_cat
         console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        shopify(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand)
+        shopify(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand, sku_mode=sku_mode)
     elif action == "📈 Inventario / Stock (CSV)":
         qty = questionary.text("Cantidad?", "100").ask()
         if not qty: return
@@ -870,9 +887,10 @@ def run_local_generator(action: str):
         selected_cat = prompt_category()
         selected_brand = prompt_brand(selected_cat)
         selected_lang = prompt_language()
+        sku_mode = prompt_sku_mode()
         search_target = selected_brand if selected_brand != "all" else selected_cat
         console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        shipedge(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand)
+        shipedge(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand, sku_mode=sku_mode)
     elif action == "📠 Generar EDI (Standard XML)":
         qty = questionary.text("¿Cuántos archivos EDI XML?", "5").ask()
         if not qty: return
@@ -1166,8 +1184,9 @@ def api_products_upload_flow():
         console.print("\n[bold yellow]⚠️ No seleccionaste ningún perfil. Operación cancelada.[/bold yellow]\n")
         return
         
+    sku_mode = prompt_sku_mode()
     gen = ProductGenerator(category=selected_cat)
-    products_data = gen.generate_batch(count)
+    products_data = gen.generate_batch(count, sku_mode=sku_mode)
     
     all_results = []
     for prof_name in profs:
@@ -2354,11 +2373,11 @@ def generate_batch_interactive():
     console.print("\n[bold green]✅ Generación Batch completada.[/bold green]")
 
 @app.command()
-def shopify(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all"):
+def shopify(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all", sku_mode: str = "single"):
     """Genera productos en formato Shopify."""
     filename = output or get_timestamp_filename("shopify_products")
-    console.print(f"[bold magenta]🛍️ OMNISYRAX: Generando {count} productos Shopify ({lang}, categoría: {category}, marca: {brand})...[/bold magenta]")
-    data = ShopifyGenerator(lang=lang, category=category, brand=brand).generate_batch(count)
+    console.print(f"[bold magenta]🛍️ OMNISYRAX: Generando {count} productos Shopify ({lang}, categoría: {category}, marca: {brand}, modo: {sku_mode})...[/bold magenta]")
+    data = ShopifyGenerator(lang=lang, category=category, brand=brand).generate_batch(count, sku_mode=sku_mode)
     CSVExporter.export(data, filename, config.output_dir)
     console.print(f"[bold green]✅ Shopify CSV listo en data/{filename}[/bold green]")
 
@@ -2398,12 +2417,12 @@ def generate_all(count: int = 20):
 
 # Comandos anteriores (reutilizados)
 @app.command()
-def products(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all"):
+def products(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all", sku_mode: str = "single"):
     """Genera productos estándar en formato CSV."""
     filename = output or get_timestamp_filename("products")
-    data = ProductGenerator(lang=lang, category=category, brand=brand).generate_batch(count)
+    data = ProductGenerator(lang=lang, category=category, brand=brand).generate_batch(count, sku_mode=sku_mode)
     CSVExporter.export(data, filename, config.output_dir)
-    console.print(f"[bold green]✅ {count} Productos generados ({lang}, categoría: {category}, marca: {brand}) en data/{filename}[/bold green]")
+    console.print(f"[bold green]✅ {count} Productos generados ({lang}, categoría: {category}, marca: {brand}, modo: {sku_mode}) en data/{filename}[/bold green]")
 
 @app.command()
 def po(count: int = 10, output: Optional[str] = None, skus: Optional[List[str]] = None):
@@ -2422,11 +2441,11 @@ def transfers(count: int = 10, output: Optional[str] = None):
     console.print(f"[bold green]✅ {count} Transferencias generadas en data/{filename}[/bold green]")
 
 @app.command()
-def shipedge(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all"):
+def shipedge(count: int = 50, output: Optional[str] = None, lang: str = "all", category: str = "all", brand: str = "all", sku_mode: str = "single"):
     """Genera productos con formato específico de importación Shipedge."""
     filename = output or get_timestamp_filename("shipedge_products")
-    console.print(f"[bold cyan]🚢 OMNISYRAX: Generando {count} productos Shipedge ({lang}, categoría: {category}, marca: {brand})...[/bold cyan]")
-    data = ShipEdgeGenerator(lang=lang, category=category, brand=brand).generate_batch(count)
+    console.print(f"[bold cyan]🚢 OMNISYRAX: Generando {count} productos Shipedge ({lang}, categoría: {category}, marca: {brand}, modo: {sku_mode})...[/bold cyan]")
+    data = ShipEdgeGenerator(lang=lang, category=category, brand=brand).generate_batch(count, sku_mode=sku_mode)
     CSVExporter.export(data, filename, config.output_dir)
     console.print(f"[bold green]✅ Shipedge CSV listo en data/{filename}[/bold green]")
 

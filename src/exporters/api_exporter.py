@@ -268,8 +268,9 @@ class APIExporter:
     def upload_product(self, product: Product) -> Dict[str, Any]:
         """Crea un producto base con su SKU y datos asociados en Omnio."""
         endpoint = f"{self.base_url}/admin/api/2024-01/products"
+        parent_name = getattr(product, 'parent_product', None) or (product.name.split(" - ")[0] if " - " in product.name else product.name)
         payload = {
-            "name": product.name,
+            "name": parent_name,
             "description_html": f"<p>{product.description}</p>",
             "type": "PURCHASED",
             "sku": product.sku,
@@ -293,22 +294,114 @@ class APIExporter:
         try:
             response = requests.post(endpoint, json=payload, headers=self.headers, timeout=15)
             if response.status_code in [200, 201]:
-                logger.info(f"✅ Producto '{product.name}' (SKU: {product.sku}) creado con éxito.")
-                return {"sku": product.sku, "name": product.name, "success": True, "error": ""}
+                logger.info(f"✅ Producto '{parent_name}' (SKU: {product.sku}) creado con éxito.")
+                return {"sku": product.sku, "name": parent_name, "success": True, "error": ""}
             else:
                 logger.error(f"❌ Error al crear producto {product.sku}: {response.status_code} - {response.text}")
-                return {"sku": product.sku, "name": product.name, "success": False, "error": f"Error {response.status_code}: {response.text}"}
+                return {"sku": product.sku, "name": parent_name, "success": False, "error": f"Error {response.status_code}: {response.text}"}
         except Exception as e:
             logger.error(f"❌ Excepción al crear producto {product.sku}: {e}")
-            return {"sku": product.sku, "name": product.name, "success": False, "error": str(e)}
+            return {"sku": product.sku, "name": parent_name, "success": False, "error": str(e)}
+
+    def _upload_product_group(self, parent_name: str, group_items: List[Product], endpoint: str) -> List[Dict[str, Any]]:
+        """Sube un producto padre (con variantes si es Multi-SKU o individual si es Single-SKU) a Omnio Condor."""
+        first_prod = group_items[0]
+        
+        if len(group_items) > 1:
+            # Multi-SKU: Condor procesa array 'skus', promoviendo el primero a principal y los demás a variantes
+            payload = {
+                "name": parent_name,
+                "description_html": f"<p>{first_prod.description}</p>",
+                "type": "PURCHASED",
+                "brand": first_prod.brand,
+                "skus": [
+                    {
+                        "sku": p.sku,
+                        "upc": p.upc,
+                        "pricing": {
+                            "retail_price": float(p.price_retail),
+                            "wholesale_price": float(p.price_wholesale),
+                            "cost": float(p.price_buy),
+                            "Retail": float(p.price_retail),
+                            "WholeSale": float(p.price_wholesale),
+                            "Buy": float(p.price_buy)
+                        },
+                        "shipping": {
+                            "weight": float(p.weight),
+                            "length": float(p.length),
+                            "width": float(p.width),
+                            "height": float(p.height)
+                        }
+                    }
+                    for p in group_items
+                ]
+            }
+        else:
+            # Single-SKU
+            p = first_prod
+            payload = {
+                "name": parent_name,
+                "description_html": f"<p>{p.description}</p>",
+                "type": "PURCHASED",
+                "brand": p.brand,
+                "sku": p.sku,
+                "upc": p.upc,
+                "pricing": {
+                    "retail_price": float(p.price_retail),
+                    "wholesale_price": float(p.price_wholesale),
+                    "cost": float(p.price_buy),
+                    "Retail": float(p.price_retail),
+                    "WholeSale": float(p.price_wholesale),
+                    "Buy": float(p.price_buy)
+                },
+                "shipping": {
+                    "weight": float(p.weight),
+                    "length": float(p.length),
+                    "width": float(p.width),
+                    "height": float(p.height)
+                }
+            }
+
+        try:
+            response = requests.post(endpoint, json=payload, headers=self.headers, timeout=20)
+            if response.status_code in [200, 201]:
+                logger.info(f"✅ Producto '{parent_name}' con {len(group_items)} SKU(s) creado con éxito en Omnio.")
+                return [
+                    {"sku": p.sku, "name": f"{parent_name} - {getattr(p, 'variant_name', p.sku)}", "success": True, "error": ""}
+                    for p in group_items
+                ]
+            else:
+                err_msg = f"Error {response.status_code}: {response.text}"
+                logger.error(f"❌ Error al crear producto '{parent_name}': {err_msg}")
+                return [
+                    {"sku": p.sku, "name": parent_name, "success": False, "error": err_msg[:200]}
+                    for p in group_items
+                ]
+        except Exception as e:
+            logger.error(f"❌ Excepción al crear producto '{parent_name}': {e}")
+            return [
+                {"sku": p.sku, "name": parent_name, "success": False, "error": str(e)}
+                for p in group_items
+            ]
 
     def upload_products(self, products: List[Product], max_workers: int = 5) -> List[Dict[str, Any]]:
-        """Sube múltiples productos concurrentemente usando un progress bar de rich."""
+        """Sube productos agrupando automáticamente variantes Multi-SKU según el modelo de Omnio Condor."""
         results = []
         if not products:
             logger.warning("No hay productos para cargar.")
             return []
 
+        # Agrupar por parent_product / base name
+        groups: Dict[str, List[Product]] = {}
+        for product in products:
+            parent_name = getattr(product, 'parent_product', None) or (product.name.split(" - ")[0] if " - " in product.name else product.name)
+            if parent_name not in groups:
+                groups[parent_name] = []
+            groups[parent_name].append(product)
+
+        endpoint = f"{self.base_url}/admin/api/2024-01/products"
+        total_products = len(groups)
+        
         from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, MofNCompleteColumn
         
         with Progress(
@@ -318,22 +411,23 @@ class APIExporter:
             MofNCompleteColumn(),
             transient=True
         ) as progress:
-            task = progress.add_task(f"Subiendo {len(products)} productos...", total=len(products))
+            task = progress.add_task(f"Subiendo {total_products} productos ({len(products)} SKUs)...", total=total_products)
             
-            if max_workers <= 1 or len(products) <= 1:
-                for product in products:
-                    res = self.upload_product(product)
-                    results.append(res)
+            if max_workers <= 1 or total_products <= 1:
+                for parent_name, group_items in groups.items():
+                    res_list = self._upload_product_group(parent_name, group_items, endpoint)
+                    results.extend(res_list)
                     progress.advance(task)
             else:
                 from concurrent.futures import ThreadPoolExecutor, as_completed
                 with ThreadPoolExecutor(max_workers=max_workers) as executor:
                     futures = {
-                        executor.submit(self.upload_product, product): product
-                        for product in products
+                        executor.submit(self._upload_product_group, parent_name, group_items, endpoint): parent_name
+                        for parent_name, group_items in groups.items()
                     }
                     for future in as_completed(futures):
-                        results.append(future.result())
+                        res_list = future.result()
+                        results.extend(res_list)
                         progress.advance(task)
                         
         return results

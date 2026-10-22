@@ -26,7 +26,7 @@ class CSVExporter:
         if not data:
             raise ValueError("No hay datos para exportar.")
             
-        output_path = output_dir / filename
+        output_path = Path(output_dir) / filename
         
         # Aplanar los modelos para CSV
         flat_data = []
@@ -125,16 +125,18 @@ class CSVExporter:
                         }
                         flat_data.append(row)
             elif hasattr(item, 'supplier'): # Productos
-                raw_desc = item.description if item.description else f"{item.name} de {item.brand}."
+                base_product = getattr(item, "parent_product", None) or (item.name.split(" - ")[0] if " - " in item.name else item.name)
+                var_name = getattr(item, "variant_name", None) or (item.name.split(" - ", 1)[1] if " - " in item.name else "Standard")
+                raw_desc = item.description if item.description else f"{base_product} de {item.brand}."
                 clean_desc = CSVExporter._clean_description(raw_desc, max_len=250)
                 row = {
-                    "product": item.name.split(" - ")[0], # Nombre base
+                    "product": base_product, # Nombre base del producto en Omnio
                     "description": clean_desc,
                     "images": item.images,
                     "type_product": item.type_product,
                     "category": item.category,
                     "brand": item.brand,
-                    "name": item.name, # Variant name
+                    "name": var_name, # Nombre específico de la variante / SKU en Omnio
                     "sku": item.sku,
                     "supplier": item.supplier,
                     "upc": item.upc,
