@@ -145,7 +145,9 @@ class CSVExporter:
                     "length": item.length,
                     "width": item.width,
                     "height": item.height,
+                    "dimension_unit": item.dimension_unit,
                     "weight": item.weight,
+                    "weight_unit": item.weight_unit,
                     "price_buy": item.price_buy,
                     "price_wholesale": item.price_wholesale,
                     "price_retail": item.price_retail

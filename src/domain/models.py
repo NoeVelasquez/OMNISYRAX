@@ -51,6 +51,8 @@ class Product(BaseModel):
     length: float
     width: float
     height: float
+    dimension_unit: str = "cm"
+    weight_unit: str = "lb"
     hs_code: str
     country_origin: str
     supplier: str

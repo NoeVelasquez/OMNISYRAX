@@ -70,13 +70,13 @@ python3 omnisyrax.py ch --count 5
 ### 📦 Generación de Productos
 | Comando | Parámetros Principales | Formato | Descripción |
 | :--- | :--- | :--- | :--- |
-| `products` | `--count`, `--category`, `--brand`, `--lang` | CSV (19 cols) | Formato estándar de 19 columnas optimizado para CONDOR/OMNIO. |
+| `products` | `--count`, `--category`, `--brand`, `--lang` | CSV (21 cols) | Formato estándar de 21 columnas optimizado para CONDOR/OMNIO. |
 | `shopify` | `--count`, `--category`, `--brand`, `--lang` | CSV Shopify | Compatible con el importador de productos de Shopify. |
 | `shipedge` | `--count`, `--category`, `--brand`, `--lang` | CSV Shipedge | Formato técnico para Shipedge (DC1, Serial Numbers, Harmonization HS). |
 
-**Estructura del CSV Estándar (19 Columnas):**
+**Estructura del CSV Estándar (21 Columnas):**
 ```csv
-product,description,images,type_product,category,brand,name,sku,supplier,upc,hs_code,country_origin,length,width,height,weight,price_buy,price_wholesale,price_retail
+product,description,images,type_product,category,brand,name,sku,supplier,upc,hs_code,country_origin,length,width,height,dimension_unit,weight,weight_unit,price_buy,price_wholesale,price_retail
 ```
 
 ### 🛍️ Órdenes, Compras e Inventario
