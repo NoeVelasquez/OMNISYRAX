@@ -82,7 +82,7 @@ product,description,images,type_product,category,brand,name,sku,supplier,upc,hs_
 ### 🛍️ Órdenes, Compras e Inventario
 | Comando | Parámetros Principales | Formato | Descripción |
 | :--- | :--- | :--- | :--- |
-| `orders` | `--count`, `--multi-sku`, `--skus-file`, `--days-back`, `--profile` | CSV / API | Órdenes de venta con direcciones reales y clientes multirregionales. |
+| `orders` | `--count`, `--multi-sku`, `--skus-file`, `--days-back`, `--country`, `--currency`, `--profile` | CSV / API | Órdenes de venta con direcciones reales y clientes multirregionales. Moneda en USD por defecto; `--currency EUR` (o cualquier código ISO) para otra, `--currency AUTO` para usar la del país. |
 | `po` | `--count`, `--skus` | CSV | Órdenes de compra (Purchase Orders) asociadas a proveedores. |
 | `inventory` | `--count`, `--skus` | CSV | Stock de almacén y existencias iniciales. |
 | `transfers` | `--count` | CSV | Movimientos y transferencias de inventario entre almacenes. |

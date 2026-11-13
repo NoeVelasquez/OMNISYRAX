@@ -50,6 +50,7 @@ def extract_skus_from_csv(file_path: str) -> List[str]:
 
 from src.core.config_manager import config
 from src.generators.order_generator import OrderGenerator
+from src.utils.currency import DEFAULT_CURRENCY, AUTO_CURRENCY, COMMON_CURRENCIES, normalize_currency
 from src.generators.product_generator import ProductGenerator
 from src.generators.po_generator import POGenerator
 from src.generators.transfer_generator import TransferGenerator
@@ -257,11 +258,12 @@ def add_or_edit_profile_flow():
             pid = questionary.text("Process ID (Manual):", default=str(existing_data.get("process_id", "1"))).ask()
             if not pid: return
 
-    currency = questionary.text(
-        "Moneda predeterminada del perfil (ej. USD, EUR - Opcional, presiona Enter para omitir):",
-        default=existing_data.get("currency", "")
-    ).ask()
-    currency = currency.strip().upper() if currency else None
+    currency = prompt_currency(
+        "Moneda predeterminada del perfil para cargas a OMNIO:",
+        allow_auto=False,
+        default_code=(existing_data.get("currency") or DEFAULT_CURRENCY).upper()
+    )
+    if currency is False: return
     
     if config.save_profile(name, token, cid, pid, api_base_url=url, currency=currency):
         console.print(f"\n[bold green]💾 Perfil '{name}' guardado correctamente en credentials.yaml.[/bold green]\n")
@@ -753,6 +755,54 @@ def prompt_language() -> str:
     }
     return lang_map.get(lang_choice, "all")
 
+PROFILE_CURRENCY_CHOICE = "👤 Usar la moneda configurada en cada perfil (USD si no tiene)"
+
+def prompt_currency(question: str = "¿Moneda de las órdenes?", allow_profile: bool = False, allow_auto: bool = True, default_code: Optional[str] = None) -> Optional[str]:
+    """Selector de moneda: USD por defecto, lista de monedas comunes, AUTO (según país) u otra escrita a mano.
+
+    Devuelve el código ISO, "AUTO", None si se eligió usar la moneda del perfil, o False si se canceló.
+    """
+    usd_label = f"💵 USD - {COMMON_CURRENCIES['USD']} (Predeterminado)"
+    choices = []
+    if allow_profile:
+        choices.append(PROFILE_CURRENCY_CHOICE)
+    choices.append(usd_label)
+    code_by_label = {usd_label: "USD"}
+    for code, name in COMMON_CURRENCIES.items():
+        if code == "USD":
+            continue
+        label = f"💱 {code} - {name}"
+        choices.append(label)
+        code_by_label[label] = code
+    auto_label = "🌍 Según el país de la dirección (MX→MXN, ES→EUR, CA→CAD...)"
+    if allow_auto:
+        choices.append(auto_label)
+    other_label = "✍️ Otra moneda (escribir código ISO de 3 letras)"
+    choices.append(other_label)
+
+    default_label = usd_label
+    if default_code:
+        default_label = next((l for l, c in code_by_label.items() if c == default_code), usd_label)
+    if allow_profile:
+        default_label = PROFILE_CURRENCY_CHOICE
+
+    choice = questionary.select(question, choices=choices, default=default_label).ask()
+    if not choice:
+        return False
+    if choice == PROFILE_CURRENCY_CHOICE:
+        return None
+    if choice == auto_label:
+        return AUTO_CURRENCY
+    if choice == other_label:
+        raw = questionary.text(
+            "Código de moneda (ISO 4217, ej. COP, CLP, PEN, ARS, JPY):",
+            validate=lambda v: True if v and len(v.strip()) == 3 and v.strip().isalpha() else "Ingresa un código de 3 letras (ej. COP)"
+        ).ask()
+        if not raw:
+            return False
+        return raw.strip().upper()
+    return code_by_label.get(choice, DEFAULT_CURRENCY)
+
 def prompt_sku_mode() -> str:
     sku_choice = questionary.select(
         "¿Estructura de SKUs por Producto?",
@@ -840,11 +890,14 @@ def run_local_generator(action: str):
         }
         selected_country = country_map.get(country_choice, "US")
 
+        selected_currency = prompt_currency("¿Moneda de las órdenes?")
+        if selected_currency is False: return
+
         if int(qty) > 2000:
             console.print(f"\n[bold cyan]⚡ Generando {qty} órdenes masivas con direcciones residenciales reales únicas (Dataset local + API en vivo)...[/bold cyan]\n")
 
         multi = True if "Multi-SKU" in sku_mode else False
-        orders(count=int(qty), format="csv", multi_sku=multi, days_back=days, skus=extracted_skus, country=selected_country)
+        orders(count=int(qty), format="csv", multi_sku=multi, days_back=days, skus=extracted_skus, country=selected_country, currency=selected_currency)
     elif action == "📦 Productos Estándar (CSV)":
         qty = questionary.text("Cantidad?", "50").ask()
         if not qty: return
@@ -968,6 +1021,12 @@ def api_orders_upload_flow():
     qty = questionary.text("¿Cuántas órdenes cargar?", default="5").ask()
     if not qty: return
     count = int(qty)
+
+    selected_currency = prompt_currency(
+        "¿Moneda de las órdenes a cargar en OMNIO?",
+        allow_profile=(mode == "Usar archivo de perfiles (Multi-compañía)")
+    )
+    if selected_currency is False: return
     
     if mode == "Configuración manual (Una sola compañía)":
         url = questionary.text("URL Base de la API?", default="https://qa5-condor.omniorders.com/").ask()
@@ -1088,7 +1147,7 @@ def api_orders_upload_flow():
         if final_profiles:
             console.print("[bold green]💾 Perfiles guardados en credentials.yaml para uso futuro.[/bold green]")
             
-            gen = OrderGenerator()
+            gen = OrderGenerator(currency=selected_currency or DEFAULT_CURRENCY)
             data = gen.generate_batch(count)
             
             all_results = []
@@ -1103,7 +1162,10 @@ def api_orders_upload_flow():
                 else:
                     tenant_data = data
                     
-                results = exporter.upload_orders(tenant_data, prof['company_id'], prof['process_id'], max_workers=5)
+                results = exporter.upload_orders(
+                    tenant_data, prof['company_id'], prof['process_id'], max_workers=5,
+                    forced_currency=None if selected_currency == AUTO_CURRENCY else (selected_currency or DEFAULT_CURRENCY)
+                )
                 for r in results:
                     r["tenant"] = prof["name"]
                 all_results.extend(results)
@@ -1125,7 +1187,7 @@ def api_orders_upload_flow():
         if not profs:
             console.print("\n[bold yellow]⚠️ No seleccionaste ningún perfil. Operación cancelada.[/bold yellow]\n")
             return
-        orders(count=count, format="api", profiles=profs)
+        orders(count=count, format="api", profiles=profs, currency=selected_currency)
 
 def api_products_upload_flow():
     valid_choices = get_valid_profiles()
@@ -2183,6 +2245,11 @@ def generate_synchronized_flow():
         
     q_orders = int(questionary.text("¿Cuántas Órdenes (usando esos productos)?", "10").ask() or 0)
     q_po = int(questionary.text("¿Cuántas POs (usando esos productos)?", "5").ask() or 0)
+
+    sync_currency = DEFAULT_CURRENCY
+    if q_orders > 0:
+        sync_currency = prompt_currency("¿Moneda de las órdenes?")
+        if sync_currency is False: return
     
     cat_choice = questionary.select(
         "¿Qué categoría de productos deseas generar?",
@@ -2269,7 +2336,7 @@ def generate_synchronized_flow():
     # 2. Órdenes
     order_data = []
     if q_orders > 0 and skus:
-        gen_o = OrderGenerator()
+        gen_o = OrderGenerator(currency=sync_currency)
         gen_o.multi_sku = multiline_enabled
         
         # Copiar pool de SKUs para control de unicidad entre órdenes
@@ -2496,6 +2563,7 @@ def orders(
     skus_file: Optional[str] = typer.Option(None, "--skus-file", help="Ruta a un archivo CSV para extraer SKUs"),
     days_back: int = 0,
     country: str = typer.Option("US", "--country", help="Ubicación de residencias: US, INT, MIXED"),
+    currency: Optional[str] = typer.Option(None, "--currency", help="Moneda de las órdenes: USD (predeterminado), cualquier código ISO (EUR, MXN, COP...) o AUTO (según país). En API, si no se indica, usa la del perfil o USD."),
     _pregenerated_data: Optional[List[str]] = typer.Option(None, hidden=True)
 ):
     """Genera órdenes de venta (Sales Orders) en CSV o carga vía API con residencias reales garantizadas."""
@@ -2508,6 +2576,14 @@ def orders(
         country = "US"
     if type(_pregenerated_data).__name__ == "OptionInfo" or "OptionInfo" in str(type(_pregenerated_data)):
         _pregenerated_data = None
+    if type(currency).__name__ == "OptionInfo" or "OptionInfo" in str(type(currency)):
+        currency = None
+    try:
+        currency = normalize_currency(currency, default=None)
+    except ValueError as e:
+        console.print(f"[bold red]❌ {e}[/bold red]")
+        raise typer.Exit(code=1)
+    gen_currency = currency or DEFAULT_CURRENCY
 
     if skus_file and not skus:
         extracted = extract_skus_from_csv(skus_file)
@@ -2518,12 +2594,12 @@ def orders(
     if _pregenerated_data:
         data = _pregenerated_data
     else:
-        gen = OrderGenerator(country_mode=country)
+        gen = OrderGenerator(country_mode=country, currency=gen_currency)
         data = gen.generate_batch(count, multi_sku=multi_sku, skus=skus, days_back=days_back, country_mode=country)
     if format == "csv":
         filename = output or get_timestamp_filename("orders")
         CSVExporter.export(data, filename, config.output_dir)
-        console.print(f"[bold green]✅ {count} Órdenes generadas con residencias reales ({country}) en data/{filename}[/bold green]")
+        console.print(f"[bold green]✅ {count} Órdenes generadas con residencias reales ({country}, moneda: {gen_currency}) en data/{filename}[/bold green]")
     elif format == "api":
         # Lógica de carga API (Soporta múltiples perfiles)
         target_profiles = []
@@ -2567,11 +2643,17 @@ def orders(
             exporter = APIExporter(base_url, prof['token'])
             
             # Intentar obtener SKUs reales del tenant para evitar errores 422
+            # Prioridad de moneda: la elegida (--currency) > la del perfil > USD. AUTO = según país.
+            effective_currency = normalize_currency(currency or prof.get('currency'), default=DEFAULT_CURRENCY)
+            if effective_currency == AUTO_CURRENCY:
+                effective_currency = None
+            console.print(f"   💱 Moneda: {effective_currency or 'según país de la dirección'}")
+
             tenant_skus = exporter.get_tenant_skus(prof['company_id'])
             if tenant_skus and not _pregenerated_data:
                 console.print(f"   ℹ️ Detectados {len(tenant_skus)} SKUs activos en el tenant. Regenerando órdenes para este tenant con SKUs reales...")
-                gen = OrderGenerator()
-                tenant_data = gen.generate_batch(count, multi_sku=multi_sku, skus=tenant_skus, days_back=days_back)
+                gen = OrderGenerator(country_mode=country, currency=gen_currency)
+                tenant_data = gen.generate_batch(count, multi_sku=multi_sku, skus=tenant_skus, days_back=days_back, country_mode=country)
             else:
                 tenant_data = data
                 
@@ -2580,7 +2662,7 @@ def orders(
                 prof['company_id'], 
                 prof['process_id'], 
                 max_workers=5,
-                forced_currency=prof.get('currency')
+                forced_currency=effective_currency
             )
             for r in results:
                 r["tenant"] = prof["name"]

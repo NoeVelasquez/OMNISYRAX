@@ -5,17 +5,22 @@ from src.core.base_generator import BaseGenerator
 from src.domain.models import Order, Customer, Address, OrderItem
 from src.utils import data_pool
 from src.utils.address_fetcher import AddressFetcher
+from src.utils.currency import DEFAULT_CURRENCY, resolve_currency
 
 class OrderGenerator(BaseGenerator):
     """Generador especializado en la creación de órdenes con direcciones residenciales reales y únicas."""
     
-    def __init__(self, lang: str = "en", country_mode: str = "US"):
+    def __init__(self, lang: str = "en", country_mode: str = "US", currency: str = DEFAULT_CURRENCY):
         super().__init__(lang)
         self.available_skus = []
         self.country_mode = country_mode
+        # Moneda de las órdenes: USD por defecto, un código ISO elegido, o "AUTO" (según país)
+        self.currency = currency
 
-    def generate_batch(self, count: int, multi_sku: bool = True, skus: list = None, days_back: int = 0, country_mode: str = "US") -> list[Order]:
+    def generate_batch(self, count: int, multi_sku: bool = True, skus: list = None, days_back: int = 0, country_mode: str = "US", currency: str = None) -> list[Order]:
         self.multi_sku = multi_sku
+        if currency:
+            self.currency = currency
         self.available_skus = skus or []
         self.days_back = days_back
         self.country_mode = country_mode
@@ -89,7 +94,7 @@ class OrderGenerator(BaseGenerator):
             state=shipping_data["state"],
             postal_code=shipping_data["zip"],
             country=shipping_data["country"],
-            currency=shipping_data["currency"]
+            currency=resolve_currency(shipping_data.get("currency"), getattr(self, "currency", DEFAULT_CURRENCY))
         )
         billing = Address(
             address1=billing_data["address1"],
@@ -97,7 +102,7 @@ class OrderGenerator(BaseGenerator):
             state=billing_data["state"],
             postal_code=billing_data["zip"],
             country=billing_data["country"],
-            currency=billing_data["currency"]
+            currency=resolve_currency(billing_data.get("currency"), getattr(self, "currency", DEFAULT_CURRENCY))
         )
         
         # Lógica de fecha (hoy o fechas pasadas)
