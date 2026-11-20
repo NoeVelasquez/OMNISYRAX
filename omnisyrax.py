@@ -1634,6 +1634,7 @@ def api_fulfill_shipment_flow():
     profile_data = config.get_profile(p_choice)
     url = profile_data.get("api_base_url") or config.get("api_base_url")
     token = profile_data.get("token")
+    cid = str(profile_data.get("company_id", ""))
     exporter = APIExporter(url, token)
     
     mode = questionary.select(
