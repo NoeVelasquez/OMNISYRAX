@@ -51,6 +51,7 @@ def extract_skus_from_csv(file_path: str) -> List[str]:
 from src.core.config_manager import config
 from src.generators.order_generator import OrderGenerator
 from src.utils.currency import DEFAULT_CURRENCY, AUTO_CURRENCY, COMMON_CURRENCIES, normalize_currency
+from src.utils.quick_settings import QUICK_DEFAULTS, load_quick_settings, save_quick_settings, reset_quick_settings, describe as describe_setting
 from src.generators.product_generator import ProductGenerator
 from src.generators.po_generator import POGenerator
 from src.generators.transfer_generator import TransferGenerator
@@ -818,11 +819,78 @@ def prompt_sku_mode() -> str:
         return "multi"
     return "mixed"
 
+QUICK_USE_CHOICE = "⚡ Rápido (usar esta configuración)"
+QUICK_CUSTOM_CHOICE = "🛠️ Personalizado (elegir cada opción)"
+QUICK_RESET_CHOICE = "♻️ Restablecer a los valores predeterminados"
+
+def choose_quick_config(keys: List[str], display_keys: Optional[List[str]] = None) -> Optional[Dict[str, Any]]:
+    """Muestra la configuración rápida (última usada o predeterminada) y pregunta cómo seguir.
+
+    Devuelve el dict de valores si se elige Rápido, {} si se elige Personalizado, o None si se cancela.
+    `display_keys` permite intercalar líneas solo informativas (ej. "sku_source").
+    """
+    display_keys = display_keys or keys
+    while True:
+        settings = load_quick_settings()
+        values = {k: settings[k] for k in keys}
+        is_default = all(values[k] == QUICK_DEFAULTS[k] for k in keys)
+        title = "Configuración predeterminada" if is_default else "Configuración rápida (la última que usaste)"
+        console.print(f"\n[bold cyan]⚡ {title}:[/bold cyan]")
+        for k in display_keys:
+            console.print(f"   • {describe_setting(k, values.get(k))}")
+        console.print("")
+
+        choices = [QUICK_USE_CHOICE, QUICK_CUSTOM_CHOICE]
+        if not is_default:
+            choices.append(QUICK_RESET_CHOICE)
+        choice = questionary.select("¿Cómo quieres continuar?", choices=choices, default=QUICK_USE_CHOICE).ask()
+        if not choice:
+            return None
+        if choice == QUICK_USE_CHOICE:
+            return values
+        if choice == QUICK_CUSTOM_CHOICE:
+            return {}
+        reset_quick_settings(keys)
+
+def prompt_product_options(include_brand: bool = True, include_lang: bool = True) -> Optional[Dict[str, Any]]:
+    """Categoría / marca / idioma / estructura de SKU con modo Rápido o Personalizado."""
+    keys = ["category"] + (["brand"] if include_brand else []) + (["lang"] if include_lang else []) + ["sku_mode"]
+    quick = choose_quick_config(keys)
+    if quick is None:
+        return None
+    if quick:
+        return quick
+    values: Dict[str, Any] = {"category": prompt_category()}
+    if include_brand:
+        values["brand"] = prompt_brand(values["category"])
+    if include_lang:
+        values["lang"] = prompt_language()
+    values["sku_mode"] = prompt_sku_mode()
+    save_quick_settings(values)
+    return values
+
+def run_local_product_csv(qty: int, generator_fn):
+    opts = prompt_product_options()
+    if opts is None: return
+    search_target = opts["brand"] if opts["brand"] != "all" else opts["category"]
+    console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
+    generator_fn(count=qty, lang=opts["lang"], category=opts["category"], brand=opts["brand"], sku_mode=opts["sku_mode"])
+
 def run_local_generator(action: str):
     if action == "🛍️ Órdenes de Venta (CSV)":
         qty = questionary.text("Cantidad?", "10").ask()
         if not qty: return
-        
+
+        order_keys = ["order_multi_sku", "order_days", "order_country", "currency"]
+        quick = choose_quick_config(order_keys, display_keys=["order_multi_sku", "sku_source", "order_days", "order_country", "currency"])
+        if quick is None: return
+        if quick:
+            if int(qty) > 2000:
+                console.print(f"\n[bold cyan]⚡ Generando {qty} órdenes masivas con direcciones residenciales reales únicas (Dataset local + API en vivo)...[/bold cyan]\n")
+            orders(count=int(qty), format="csv", multi_sku=quick["order_multi_sku"], days_back=quick["order_days"],
+                   skus=None, country=quick["order_country"], currency=quick["currency"])
+            return
+
         sku_mode = questionary.select(
             "¿Tipo de orden?",
             choices=[
@@ -896,28 +964,17 @@ def run_local_generator(action: str):
         if int(qty) > 2000:
             console.print(f"\n[bold cyan]⚡ Generando {qty} órdenes masivas con direcciones residenciales reales únicas (Dataset local + API en vivo)...[/bold cyan]\n")
 
-        multi = True if "Multi-SKU" in sku_mode else False
+        multi = bool(sku_mode and "Multi-SKU" in sku_mode)
+        save_quick_settings({"order_multi_sku": multi, "order_days": days, "order_country": selected_country, "currency": selected_currency})
         orders(count=int(qty), format="csv", multi_sku=multi, days_back=days, skus=extracted_skus, country=selected_country, currency=selected_currency)
     elif action == "📦 Productos Estándar (CSV)":
         qty = questionary.text("Cantidad?", "50").ask()
         if not qty: return
-        selected_cat = prompt_category()
-        selected_brand = prompt_brand(selected_cat)
-        selected_lang = prompt_language()
-        sku_mode = prompt_sku_mode()
-        search_target = selected_brand if selected_brand != "all" else selected_cat
-        console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        products(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand, sku_mode=sku_mode)
+        run_local_product_csv(int(qty), products)
     elif action == "🏪 Productos Shopify (CSV)":
         qty = questionary.text("Cantidad?", "20").ask()
         if not qty: return
-        selected_cat = prompt_category()
-        selected_brand = prompt_brand(selected_cat)
-        selected_lang = prompt_language()
-        sku_mode = prompt_sku_mode()
-        search_target = selected_brand if selected_brand != "all" else selected_cat
-        console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        shopify(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand, sku_mode=sku_mode)
+        run_local_product_csv(int(qty), shopify)
     elif action == "📈 Inventario / Stock (CSV)":
         qty = questionary.text("Cantidad?", "100").ask()
         if not qty: return
@@ -937,17 +994,17 @@ def run_local_generator(action: str):
     elif action == "🚢 Productos Shipedge (Específicos)":
         qty = questionary.text("Cantidad?", "50").ask()
         if not qty: return
-        selected_cat = prompt_category()
-        selected_brand = prompt_brand(selected_cat)
-        selected_lang = prompt_language()
-        sku_mode = prompt_sku_mode()
-        search_target = selected_brand if selected_brand != "all" else selected_cat
-        console.print(f"\n[bold yellow]🌐 Consultando APIs y catálogos en vivo vía Internet para productos de '{search_target}'... Por favor espera un momento ⏳[/bold yellow]\n")
-        shipedge(count=int(qty), lang=selected_lang, category=selected_cat, brand=selected_brand, sku_mode=sku_mode)
+        run_local_product_csv(int(qty), shipedge)
     elif action == "📠 Generar EDI (Standard XML)":
         qty = questionary.text("¿Cuántos archivos EDI XML?", "5").ask()
         if not qty: return
-        
+
+        quick = choose_quick_config(["edi_items_mode", "edi_sku_choice"])
+        if quick is None: return
+        if quick:
+            edi(count=int(qty), items_mode=quick["edi_items_mode"], sku_choice=quick["edi_sku_choice"])
+            return
+
         items_choice = questionary.select(
             "¿Composición de la orden EDI?",
             choices=[
@@ -968,7 +1025,8 @@ def run_local_generator(action: str):
         
         items_mode = "single" if "Una sola" in items_choice else "multi"
         sku_choice = "fixed" if "específico" in sku_choice_val else "random"
-        
+        save_quick_settings({"edi_items_mode": items_mode, "edi_sku_choice": sku_choice})
+
         edi(count=int(qty), items_mode=items_mode, sku_choice=sku_choice)
     elif action == "🏠 Generar CH (Cargo Hub XML)":
         qty = questionary.text("¿Cuántos archivos CH .neworders?", "5").ask()
@@ -1200,42 +1258,10 @@ def api_products_upload_flow():
     if not qty: return
     count = int(qty)
     
-    cat_choice = questionary.select(
-        "¿Qué categoría de productos deseas generar para subir?",
-        choices=[
-            "🎲 Aleatorio (Todas las categorías)",
-            "🔌 Electrónica (Electronics)",
-            "👕 Ropa y Calzado (Clothing)",
-            "🍎 Alimentos (Food)",
-            "📚 Libros (Books)",
-            "🏡 Hogar y Jardín (Home & Garden)",
-            "⚽ Deportes (Sports)",
-            "🧸 Juguetes (Toys)",
-            "🩺 Salud (Health)",
-            "💄 Belleza (Beauty)",
-            "🚗 Automotriz (Automotive)",
-            "💎 Joyería y Accesorios (Jewelry & Accessories)",
-            "🛠️ Herramientas y Ferretería (Tools & Hardware)"
-        ]
-    ).ask()
-    if not cat_choice: return
-    
-    cat_map = {
-        "🎲 Aleatorio (Todas las categorías)": "all",
-        "🔌 Electrónica (Electronics)": "Electronics",
-        "👕 Ropa y Calzado (Clothing)": "Clothing",
-        "🍎 Alimentos (Food)": "Food",
-        "📚 Libros (Books)": "Books",
-        "🏡 Hogar y Jardín (Home & Garden)": "Home & Garden",
-        "⚽ Deportes (Sports)": "Sports",
-        "🧸 Juguetes (Toys)": "Toys",
-        "🩺 Salud (Health)": "Health",
-        "💄 Belleza (Beauty)": "Beauty",
-        "🚗 Automotriz (Automotive)": "Automotive",
-        "💎 Joyería y Accesorios (Jewelry & Accessories)": "Jewelry & Accessories",
-        "🛠️ Herramientas y Ferretería (Tools & Hardware)": "Tools & Hardware"
-    }
-    selected_cat = cat_map.get(cat_choice, "all")
+    opts = prompt_product_options(include_brand=False, include_lang=False)
+    if opts is None: return
+    selected_cat = opts["category"]
+    sku_mode = opts["sku_mode"]
     
     profs = questionary.checkbox(
         "Selecciona los perfiles para subir productos (Espacio para marcar):", 
@@ -1245,8 +1271,7 @@ def api_products_upload_flow():
     if not profs:
         console.print("\n[bold yellow]⚠️ No seleccionaste ningún perfil. Operación cancelada.[/bold yellow]\n")
         return
-        
-    sku_mode = prompt_sku_mode()
+
     gen = ProductGenerator(category=selected_cat)
     products_data = gen.generate_batch(count, sku_mode=sku_mode)
     
@@ -2206,98 +2231,70 @@ def generate_synchronized_flow():
     console.print("[bold yellow]LÓGICA: 📦 PRODUCTOS (SKUs) ➔ 🛍️ ÓRDENES ➔ 📝 POs[/bold yellow]\n")
     
     q_products = int(questionary.text("¿Cuántos Productos base quieres generar?", "20").ask() or 0)
-    
-    # Pregunta A
-    repeat_skus = questionary.select(
-        "¿Quieres que los SKUs se repitan en diferentes órdenes?",
-        choices=["Sí", "No"]
-    ).ask()
-    if not repeat_skus: return
-    sku_repetition = (repeat_skus == "Sí")
-    
-    # Pregunta B
-    composition_choice = questionary.select(
-        "¿Cuántos SKUs diferentes puede tener una sola orden?",
-        choices=["Una sola línea", "Multi-línea aleatorio 1-5"]
-    ).ask()
-    if not composition_choice: return
-    multiline_enabled = (composition_choice == "Multi-línea aleatorio 1-5")
-    
-    # Pregunta C
-    temporalidad_choice = questionary.select(
-        "¿Cuál es el rango de fechas de las órdenes?",
-        choices=["Solo el día de hoy", "Historial hacia atrás (Semanas/Meses/Años)"]
-    ).ask()
-    if not temporalidad_choice: return
-    
-    if temporalidad_choice == "Historial hacia atrás (Semanas/Meses/Años)":
-        days_back_input = questionary.text(
-            "¿Cuántos días de historial hacia atrás quieres generar? (Máximo 730 días / 2 años):",
-            default="30"
-        ).ask()
-        if not days_back_input: return
-        try:
-            days = min(730, max(0, int(days_back_input)))
-        except ValueError:
-            days = 30
-    else:
-        days = 0
-        
     q_orders = int(questionary.text("¿Cuántas Órdenes (usando esos productos)?", "10").ask() or 0)
     q_po = int(questionary.text("¿Cuántas POs (usando esos productos)?", "5").ask() or 0)
 
-    sync_currency = DEFAULT_CURRENCY
-    if q_orders > 0:
-        sync_currency = prompt_currency("¿Moneda de las órdenes?")
-        if sync_currency is False: return
-    
-    cat_choice = questionary.select(
-        "¿Qué categoría de productos deseas generar?",
-        choices=[
-            "🎲 Aleatorio (Todas las categorías)",
-            "🔌 Electrónica (Electronics)",
-            "👕 Ropa y Calzado (Clothing)",
-            "🍎 Alimentos (Food)",
-            "📚 Libros (Books)",
-            "🏡 Hogar y Jardín (Home & Garden)",
-            "⚽ Deportes (Sports)",
-            "🧸 Juguetes (Toys)",
-            "🩺 Salud (Health)",
-            "💄 Belleza (Beauty)",
-            "🚗 Automotriz (Automotive)",
-            "💎 Joyería y Accesorios (Jewelry & Accessories)",
-            "🛠️ Herramientas y Ferretería (Tools & Hardware)"
-        ]
-    ).ask()
-    if not cat_choice: return
-    
-    cat_map = {
-        "🎲 Aleatorio (Todas las categorías)": "all",
-        "🔌 Electrónica (Electronics)": "Electronics",
-        "👕 Ropa y Calzado (Clothing)": "Clothing",
-        "🍎 Alimentos (Food)": "Food",
-        "📚 Libros (Books)": "Books",
-        "🏡 Hogar y Jardín (Home & Garden)": "Home & Garden",
-        "⚽ Deportes (Sports)": "Sports",
-        "🧸 Juguetes (Toys)": "Toys",
-        "🩺 Salud (Health)": "Health",
-        "💄 Belleza (Beauty)": "Beauty",
-        "🚗 Automotriz (Automotive)": "Automotive",
-        "💎 Joyería y Accesorios (Jewelry & Accessories)": "Jewelry & Accessories",
-        "🛠️ Herramientas y Ferretería (Tools & Hardware)": "Tools & Hardware"
-    }
-    selected_cat = cat_map.get(cat_choice, "all")
-    
-    lang_choice = questionary.select(
-        "¿Idioma de los productos?",
-        choices=["Todos los idiomas (Multilingüe)", "Solo Español (es)", "Solo Inglés (en)"]
-    ).ask()
-    if not lang_choice: return
-    
-    lang_map = {"Todos los idiomas (Multilingüe)": "all", "Solo Español (es)": "es", "Solo Inglés (en)": "en"}
-    selected_lang = lang_map.get(lang_choice, "all")
-    
-    upload_api = questionary.confirm("¿Deseas cargar las órdenes vía API al finalizar?", default=False).ask()
+    sync_keys = ["sync_repeat_skus", "order_multi_sku", "order_days", "currency", "category", "lang", "upload_api"]
+    quick = choose_quick_config(sync_keys)
+    if quick is None: return
+    if quick:
+        sku_repetition = quick["sync_repeat_skus"]
+        multiline_enabled = quick["order_multi_sku"]
+        days = quick["order_days"]
+        sync_currency = quick["currency"]
+        selected_cat = quick["category"]
+        selected_lang = quick["lang"]
+        upload_api = quick["upload_api"]
+    else:
+        # Pregunta A
+        repeat_skus = questionary.select(
+            "¿Quieres que los SKUs se repitan en diferentes órdenes?",
+            choices=["Sí", "No"]
+        ).ask()
+        if not repeat_skus: return
+        sku_repetition = (repeat_skus == "Sí")
+
+        # Pregunta B
+        composition_choice = questionary.select(
+            "¿Cuántos SKUs diferentes puede tener una sola orden?",
+            choices=["Una sola línea", "Multi-línea aleatorio 1-5"]
+        ).ask()
+        if not composition_choice: return
+        multiline_enabled = (composition_choice == "Multi-línea aleatorio 1-5")
+
+        # Pregunta C
+        temporalidad_choice = questionary.select(
+            "¿Cuál es el rango de fechas de las órdenes?",
+            choices=["Solo el día de hoy", "Historial hacia atrás (Semanas/Meses/Años)"]
+        ).ask()
+        if not temporalidad_choice: return
+
+        if temporalidad_choice == "Historial hacia atrás (Semanas/Meses/Años)":
+            days_back_input = questionary.text(
+                "¿Cuántos días de historial hacia atrás quieres generar? (Máximo 730 días / 2 años):",
+                default="30"
+            ).ask()
+            if not days_back_input: return
+            try:
+                days = min(730, max(0, int(days_back_input)))
+            except ValueError:
+                days = 30
+        else:
+            days = 0
+
+        sync_currency = DEFAULT_CURRENCY
+        if q_orders > 0:
+            sync_currency = prompt_currency("¿Moneda de las órdenes?")
+            if sync_currency is False: return
+
+        selected_cat = prompt_category()
+        selected_lang = prompt_language()
+        upload_api = bool(questionary.confirm("¿Deseas cargar las órdenes vía API al finalizar?", default=False).ask())
+
+        save_quick_settings({
+            "sync_repeat_skus": sku_repetition, "order_multi_sku": multiline_enabled, "order_days": days,
+            "currency": sync_currency, "category": selected_cat, "lang": selected_lang, "upload_api": upload_api,
+        })
     
     skus = []
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
