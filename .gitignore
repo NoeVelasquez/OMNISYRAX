@@ -42,3 +42,6 @@ updatetrackin.txt
 .DS_Store
 .vscode/
 .idea/
+
+# Configuración rápida recordada (por usuario)
+data/.quick_settings.json
